@@ -1,0 +1,913 @@
+{% extends "nav.html" %}
+{% block body %}
+<script>
+ $(document).ready(function() {
+
+    $("input").value = '';
+    $('select').prop('selectedIndex',0);
+    $('#select2-employeeSelect-container').text('Izberi...')
+    $('#select2-employeeSelect-container').val('Izberi...')
+    $('input').prop('checked', false);
+
+
+     $("#saveButton").css("pointer-events", "none");
+     var settingsReceivedLocation = "{{ receivedLocation }}";
+     var settingsLocationAllocation = "{{ locationAllocation }}";
+     var locations = "[{% for e in employees %}{%- if not loop.last %}\"{{e.location}}\",{% else %}\"{{e.location}}\"{% endif %}{% endfor %}]";
+     var locationsArray = JSON.parse(locations);
+     var equipmentString = "[{% for eq in equipment %} {%- if not loop.last %} \"{{eq.name}}\", {% else %} \"{{eq.name}}\" {% endif %} {% endfor %}]"
+     var equipmentArray = JSON.parse(equipmentString);
+     var originalEquipmentSize = equipmentArray.length;
+     var currentEquipmentString = '<td width="50%"><div class="reverzInputDiv"><select class="selectpicker givenEq reverzInput" data-live-search="true"><option>Izberi ...</option>{% for eq in equipment %} <option>{{eq.name}}</option> {% endfor %}</select><img src="{{ url_for("static", filename="icons/alert-triangle.svg") }}"></div> </td> <td width="18%"> <div class="reverzInputDiv"><input autocomplete="off" type="text" class="form-control givenInvNum reverzInput" /><img src="{{ url_for("static", filename="icons/alert-triangle.svg") }}"></div></td> <td width="7%"></td></tr>'
+     var currentEquipmentRemoveString = '<td width="50%"><div class="reverzInputDiv"><select class="selectpicker takenEq reverzInput" data-live-search="true"><option>Izberi ...</option>{% for eq in equipment %} <option>{{eq.name}}</option> {% endfor %}</select><img src="{{ url_for("static", filename="icons/alert-triangle.svg") }}"></div> </td> <td width="18%"> <div class="reverzInputDiv"><input autocomplete="off" type="text" class="form-control takenInvNum reverzInput" /><img src="{{ url_for("static", filename="icons/alert-triangle.svg") }}"></div></td> <td width="7%"></td></tr>'
+
+
+     $('html, body').css({
+         overflow: 'hidden'
+     });
+     setTimeout(function(){
+         $('html, body').css({
+             overflowY: 'auto'
+         });
+     }, 1000);
+
+    var addCounter = 1;
+    var removeCounter = 1;
+
+
+    $('#showTaken').click(function(){
+        $('#takenLocation').val(settingsReceivedLocation).change();
+    });
+
+
+    $("#employeeSelect").change(function(){
+        var index = $("#employeeSelect").prop('selectedIndex') - 1;
+        if(settingsLocationAllocation != "0") {
+            $("#givenLocation").val(locationsArray[index]);
+        }
+
+    });
+
+      $("#addButton").click(function(){
+         if(addCounter + removeCounter <= 13){
+            var newRow = jQuery('<tr class="w3-animate-left"><td width="21%" colspan="2" class="special_td"><div class="checkbox-container"><input id="new_'+addCounter+'" type="checkbox"><label for="new_'+addCounter+'" >Nova oprema</label></div></td><td class="special_td_num" width="4%">'+addCounter+"."+'</td>' + currentEquipmentString);
+            jQuery('#addTable').append(newRow);
+
+            addCounter++;
+            var newPos = 400 + addCounter * 30;
+            var stringNewPos = newPos + "px";
+            $("#removeButton").css({ top: stringNewPos });
+            $('.selectpicker').select2();
+
+            $(".givenInvNum").keyup(function(){
+                var checkbox = $(this).closest("tr").find('input[type="checkbox"]');
+                if($(this).val().indexOf("*") !== -1 && !$(checkbox).is(':checked')){
+                    $(checkbox).prop('checked', true);
+                }
+            })
+        }
+        else{
+            alert("V reverzu je prevec opreme");
+        }
+       });
+
+       $(".switch").click(function(){
+           var givenChecked = $('#showGiven')[0].checked;
+           var takenChecked = $('#showTaken')[0].checked;
+
+           if(givenChecked){
+               $("#addLeft").css("opacity", "1");
+               $("#addRight").css("opacity", "0");
+           }
+           else {
+               $("#addLeft").css("opacity", "0");
+               $("#addRight").css("opacity", "1");
+           }
+
+           if(givenChecked || takenChecked){
+               $("#reverzFormImageDiv").css("opacity", "0");
+               $("#reverzFormImageDiv").css("margin-top", "9%");
+           }
+           else{
+               $("#reverzFormImageDiv").css("margin-top", "4%");
+               $("#reverzFormImageDiv").css("opacity", "1");
+           }
+
+           var addTableRowCount = 1;
+           var removeTableRowCount = 1;
+           if(givenChecked){
+               addTableRowCount = $('#addTable tr').length;
+           }
+           if(takenChecked){
+               removeTableRowCount = $('#removeTable tr').length;
+           }
+           if((addTableRowCount + removeTableRowCount > 2)){
+               $("#saveButton").css("opacity", "1");
+               $("#saveButton").css("pointer-events", "auto");
+           }
+           else{
+               $("#saveButton").css("opacity", "0");
+               $("#saveButton").css("pointer-events", "none");
+           }
+           if (window.innerWidth < 992) {
+               $("#reverzFormWrapperRight").css("width", "100%");
+               $("#reverzFormWrapperLeft").css("width", "100%");
+
+               if(givenChecked){
+                   $("#reverzFormWrapperLeft").css("width", "100%");
+                   $("#reverzFormWrapperLeft").css("opacity", "1");
+                   $("#reverzFormWrapperLeft").css("pointer-events", "auto");
+               }
+               if(takenChecked){
+                   $("#reverzFormWrapperRight").css("width", "100%");
+                   $("#reverzFormWrapperRight").css("opacity", "1");
+                   $("#reverzFormWrapperRight").css("pointer-events", "auto");
+               }
+               if(!givenChecked){
+                   $("#reverzFormWrapperLeft").css("width", "0%");
+                   $("#reverzFormWrapperLeft").css("opacity", "0");
+                   $("#reverzFormWrapperLeft").css("pointer-events", "none");
+               }
+               if(!takenChecked){
+                   $("#reverzFormWrapperRight").css("width", "0%");
+                   $("#reverzFormWrapperRight").css("opacity", "0");
+                   $("#reverzFormWrapperRight").css("pointer-events", "none");
+               }
+           }
+           else{
+               if (givenChecked && takenChecked){
+                   $("#reverzFormWrapperLeft").css("width", "50%");
+                   $("#reverzFormWrapperLeft").css("opacity", "1");
+                   $("#reverzFormWrapperLeft").css("pointer-events", "auto");
+                   $("#reverzFormWrapperRight").css("width", "50%");
+                   $("#reverzFormWrapperRight").css("opacity", "1");
+                   $("#reverzFormWrapperRight").css("pointer-events", "auto");
+                }
+                else if(!givenChecked && takenChecked){
+                    $("#reverzFormWrapperLeft").css("width", "0%");
+                    $("#reverzFormWrapperLeft").css("opacity", "0");
+                    $("#reverzFormWrapperLeft").css("pointer-events", "none");
+                    $("#reverzFormWrapperRight").css("width", "100%");
+                    $("#reverzFormWrapperRight").css("opacity", "1");
+                    $("#reverzFormWrapperRight").css("pointer-events", "auto");
+                }
+                else if(givenChecked && !takenChecked){
+                    $("#reverzFormWrapperLeft").css("width", "100%");
+                    $("#reverzFormWrapperLeft").css("opacity", "1");
+                    $("#reverzFormWrapperLeft").css("pointer-events", "auto");
+                    $("#reverzFormWrapperRight").css("width", "0%");
+                    $("#reverzFormWrapperRight").css("opacity", "0");
+                    $("#reverzFormWrapperRight").css("pointer-events", "none");
+                }
+                else{
+                    $("#reverzFormWrapperLeft").css("width", "0%");
+                    $("#reverzFormWrapperLeft").css("opacity", "0");
+                    $("#reverzFormWrapperLeft").css("pointer-events", "none");
+                    $("#reverzFormWrapperRight").css("width", "0%");
+                    $("#reverzFormWrapperRight").css("opacity", "0");
+                    $("#reverzFormWrapperRight").css("pointer-events", "none");
+                }
+            }
+       });
+
+       $(".reverzButton").click(function() {
+
+           setTimeout(function(){
+               var givenChecked = $('#showGiven')[0].checked;
+               var takenChecked = $('#showTaken')[0].checked;
+               var addTableRowCount = 1;
+               var removeTableRowCount = 1;
+               if(givenChecked){
+                   addTableRowCount = addCounter;
+               }
+               if(takenChecked){
+                   removeTableRowCount = removeCounter;
+               }
+               if((addTableRowCount + removeTableRowCount > 2)){
+                   $("#saveButton").css("opacity", "1");
+                   $("#saveButton").css("pointer-events", "auto");
+               }
+               else{
+                   $("#saveButton").css("opacity", "0");
+                   $("#saveButton").css("pointer-events", "none");
+               }
+           }, 100);
+       });
+
+       window.onresize = function() {
+           if (window.innerWidth >= 992) {
+               $("#reverzFormWrapperRight").css("width", "50%");
+               $("#reverzFormWrapperLeft").css("width", "50%");
+           }
+           else {
+               $("#reverzFormWrapperRight").css("width", "100%");
+               $("#reverzFormWrapperLeft").css("width", "100%");
+           }
+       }
+
+       $("#addButtonRemove").click(function(){
+           var $last = jQuery('#addTable').find('tr:eq(' + (addCounter - 1) + ')');
+           if(addCounter > 1) {
+               $last.css("transform", "translateX(-300px)");
+               $last.css("opacity", "0");
+               addCounter--;
+               setTimeout(function(){
+                   $last.remove();
+               }, 350);
+            }
+            else {
+                alert("Vrstica ne obstaja");
+            }
+        });
+
+        $("#removeButtonRemove").click(function(){
+            var $last = jQuery('#removeTable').find('tr:eq(' + (removeCounter - 1) + ')');
+            if(removeCounter > 1) {
+                $last.css("transform", "translateX(300px)");
+                $last.css("opacity", "0");
+                removeCounter--;
+                setTimeout(function(){
+                    $last.remove();
+                }, 350);
+             }
+             else {
+                 alert("Vrstica ne obstaja");
+             }
+         });
+
+       $("#removeButton").click(function(){
+           if(addCounter + removeCounter <= 13){
+            var newRow = jQuery('<tr class="w3-animate-right"><td width="7%"></td><td width="14%"></td><td width="4%">'+removeCounter+"."+'</td>' + currentEquipmentRemoveString);
+            jQuery('#removeTable').append(newRow);
+            removeCounter++;
+            $('.selectpicker').select2();
+        }
+        else {
+            alert("V reverzu je prevec opreme");
+        }
+        });
+
+
+
+       $(function() {
+         $('#employeeSelect').change(function(){
+                 var value = $("#employeeSelect option:selected");
+
+         });
+      });
+
+      $(".takenInvNum").change(function(){
+          var ok = true;
+          test = $(this).text();
+          if($.isNumeric(test)){
+              $(".takenInvNum").each(function(index, el) {
+                  if(test == $(this).text()){
+                      ok = false;
+                  }
+              });
+          }
+          if(!ok){
+              alert("Inventarna številka je že vpisana v polju");
+              $(this).text("");
+          }
+      });
+
+
+          $("#saveButton").click(function(){
+
+              givenEq = [];
+              takenEq = [];
+              givenInvNum = [];
+              takenInvNum = [];
+              var givenNew = [];
+              var user;
+              var givenLocation;
+              var takenLocation;
+
+              var givenChecked = $('#showGiven')[0].checked;
+              var takenChecked = $('#showTaken')[0].checked;
+
+              $('#employeeSelect option:selected').each(function(){
+                    user = $(this).text();
+              });
+
+              givenLocation = $('#givenLocation');
+              if(givenChecked){
+                  $('.givenEq option:selected').each(function(){
+                        givenEq.push($(this).text());
+                  });
+                  $('.givenInvNum').each(function(){
+                        givenInvNum.push($(this).val());
+                  });
+                  $('.checkbox-container input').each(function(){
+                        if($(this).is(":checked")){
+                            givenNew.push(1);
+                        }
+                        else{
+                            givenNew.push(0);
+                        }
+                  });
+                  var indexCounter = 0;
+                  $(givenInvNum).each(function(){
+                        if (givenNew[indexCounter] == 1 && this.indexOf("*") == -1){
+                            givenInvNum[indexCounter] += "*";
+                        }
+                        indexCounter = indexCounter + 1;
+                  });
+              }
+              else {
+                givenLocation = $('#takenLocation');
+              }
+
+              if(takenChecked){
+                  $('.takenEq option:selected').each(function(){
+                        takenEq.push($(this).text());
+                  });
+                  $('.takenInvNum').each(function(){
+                        takenInvNum.push($(this).val());
+                  });
+              }
+
+              if(user != "Izberi ..." && $.trim(givenLocation.val()) != "" && $.inArray("Izberi ...", givenEq) == -1 && $.inArray("Izberi ...", takenEq) == -1 && $.inArray("", givenInvNum) == -1 && $.inArray("", takenInvNum) == -1){
+                  takenLocation = $('#takenLocation').val();
+                  givenLocation = $('#givenLocation').val();
+
+                  var reverz = {};
+                  reverz.uporabnik = user;
+                  reverz.izdanaLokacija = givenLocation;
+                  reverz.izdanaOprema = givenEq;
+                  reverz.izdanaInvNum = givenInvNum;
+                  reverz.vrnjenaLokacija = takenLocation;
+                  reverz.vrnjenaOprema = takenEq;
+                  reverz.vrnjenaInvNum = takenInvNum;
+                  console.log(takenLocation)
+
+                  $(".reverzInput").each(function(index, el) {
+                      $(this).siblings('img').css("display", "none");
+                  });
+                  
+                  $(".loadingScreen").css("display", "block");
+
+                  $.ajax({
+                      type: "POST",
+                      url: "/reverz/",
+                      data: JSON.stringify(reverz),
+                      contentType: "application/json; charset=utf-8",
+                      dataType: "json",
+                      success: function(result) {
+                          setTimeout(function(){
+                                //window.open("/generated/{{sessionUser}}");
+                                window.location = '/download/pdf/{{sessionUser}}/' + result[0];
+                            }, 1);
+                          $(".loadingScreen").css("display", "none");
+                          var addCounter = 1;
+                          var removeCounter = 1;
+
+                            $("#givenLocation").val("");
+                            $('select').prop('selectedIndex',0);
+                            $('#select2-employeeSelect-container').text('Izberi...')
+                            $('#select2-employeeSelect-container').val('Izberi...')
+                            $('input').prop('checked', false);
+                            $("#addTable tr:not(:first)").remove();
+                            $("#removeTable tr:not(:first)").remove();
+
+                            $("#reverzFormWrapperLeft").css("width", "0%");
+                    $("#reverzFormWrapperLeft").css("opacity", "0");
+                    $("#reverzFormWrapperLeft").css("pointer-events", "none");
+                    $("#reverzFormWrapperRight").css("width", "0%");
+                    $("#reverzFormWrapperRight").css("opacity", "0");
+                    $("#reverzFormWrapperRight").css("pointer-events", "none");
+                    $("#saveButton").css("opacity", "0");
+               $("#saveButton").css("pointer-events", "none");
+                          //location.reload(true)
+                          },
+                      error: function(errMsg) {
+                          $("#loadingScreen").css("display", "none");
+                          window.location.href = "https://server.zav-sava.si/";
+                          alert("An error has occured");
+                          
+                      }
+                  });
+              }
+              else {
+
+                  $(".reverzInput").each(function(index, el) {
+                      if($(this).val() == "" || $(this).val() == "Izberi ..."){
+                          $(this).siblings('img').css("display", "block");
+                      }
+                      else {
+                          $(this).siblings('img').css("display", "none");
+                      }
+                  });
+                  button = $(this);
+                  button.css("animation", "shake 0.82s cubic-bezier(.36,.07,.19,.97) both");
+                  setTimeout(function(){
+                      button.css("animation", "");
+                  }, 820);
+              }
+          });
+
+
+
+          var lastIndex = 0;
+          var value;
+
+          var userAdded = false;
+          var equipmentAdded = false;
+          var producerAdded = false;
+          var equipmentTypeAdded = false
+
+          $("#addSelectDiv").css("transition", "opacity 0.5s ease-out");
+          $("#addUserDiv").css("display", "block");
+          setTimeout(function(){
+              $("#addSelectDiv").css("opacity", "1");
+              $("#addUserDiv").css("opacity", "1");
+          }, 100)
+
+          $("#addSelect").change(function() {
+              $('#addSelect option:selected').each(function(){
+                    value = $(this).index();
+              });
+              var before = $("#addMainContainer").children()[lastIndex];
+              var after = $("#addMainContainer").children()[value];
+              $(before).css("opacity", "0");
+
+              setTimeout(function(){
+                  $(before).css("display", "none");
+                  $(after).css("display", "block");
+
+                  setTimeout(function(){
+                      $(after).css("opacity", "1");
+                  }, 100);
+
+              }, 500);
+
+              lastIndex = value;
+          });
+
+          $("#formInputButton1").click(function(){
+              var ok = true;
+              var ezsoOk = true;
+
+              if($("#ezso").val().length != 7 || !$.isNumeric($("#ezso").val())){
+                  ok = false;
+                  ezsoOk = false;
+
+                  $("#ezsoWarning").css("display", "block");
+              }
+              else {
+                  $("#ezsoWarning").css("display", "none");
+              }
+
+              $(".formInput1").each(function(index, el) {
+                  if($(this).val() == "" || $(this).val() == "Izberi ..."){
+                      ok = false;
+                      $(this).siblings('img').css("display", "block");
+                  }
+                  else {
+                      $(this).siblings('img').css("display", "none");
+
+                      if(!ezsoOk){
+                          console.log($("#ezso").val().length);
+                          $("#ezsoWarning").css("display", "block");
+                      }
+                      else {
+                          $("#ezsoWarning").css("display", "none");
+                      }
+                  }
+              });
+              if(!ok){
+                  button = $(this);
+                  button.css("animation", "shake 0.82s cubic-bezier(.36,.07,.19,.97) both");
+                  setTimeout(function(){
+                      button.css("animation", "");
+                  }, 820);
+              }
+              else {
+                  $.post( "/addUser/", { ime: $("#ime").val(), priimek: $("#priimek").val(), ezso: $("#ezso").val(), location: $("#location").val(), enota: $("#enota").val() }).done(function(data){
+                       if(!userAdded){
+                           $("#employeeSelect option").eq(1).before($("<optgroup label=\"Novo dodani uporabniki:\"></optgroup>"));
+                       }
+                       var newUserString = $("#ime").val() + " " + $("#priimek").val();
+                       $("#employeeSelect optgroup").append('<option style="font-weight: bold;">' + newUserString + '</option>');
+                       locationsArray.splice(0, 0, $("#location").val());
+                       var userAdded = true;
+                       $('.selectpicker').select2();
+                       $("#id01").css("display", "none");
+                       $('#id01').find('input:text').val('');
+                  });
+                  alert("Uspesno dodano v bazo");
+              }
+          });
+
+          $("#formInputButton2").click(function(){
+              var ok = true;
+
+              $(".formInput2").each(function(index, el) {
+                  if($(this).val() == "" || $(this).val() == "Izberi ..."){
+                      ok = false;
+                      $(this).siblings('img').css("display", "block");
+                  }
+                  else {
+                      $(this).siblings('img').css("display", "none");
+                  }
+              });
+              if(!ok){
+                  button = $(this);
+                  button.css("animation", "shake 0.82s cubic-bezier(.36,.07,.19,.97) both");
+                  setTimeout(function(){
+                      button.css("animation", "");
+                  }, 820);
+              }
+              else {
+                  $.post( "/addEquipment/", { tip: $("#tip").val(), znamka: $("#znamka").val(), model: $("#model").val() }).done(function(data){
+                       
+                       if(!equipmentAdded
+                       ){
+                           $(".givenEq").each(function(index, el) {
+
+                              $(this).children('option').eq(1).before($("<optgroup label=\"Novo dodana oprema:\"></optgroup>"));
+                           });
+                           $(".takenEq").each(function(index, el) {
+                              $(this).children('option').eq(1).before($("<optgroup label=\"Novo dodana oprema:\"></optgroup>"));
+                           });
+                           equipmentAdded = true;
+
+                       }
+                       var newEqString = $("#tip").val() + " " + $("#znamka").val() + " " + $("#model").val()
+                       $(".givenEq optgroup").append("<option>"+newEqString+"</option>");
+                       $(".takenEq optgroup").append("<option>"+newEqString+"</option>");
+                       equipmentArray.push(newEqString);
+
+                       var letMeDoTheString = '<td width="50%"><div class="reverzInputDiv"><select class="selectpicker givenEq reverzInput" data-live-search="true"><option>Izberi ...</option><optgroup label=\"Novo dodana oprema:\">';
+                       var letMeDoTheRemoveString = '<td width="50%"><div class="reverzInputDiv"><select class="selectpicker takenEq reverzInput" data-live-search="true"><option>Izberi ...</option><optgroup label=\"Novo dodana oprema:\">';
+                       var letMeDoTheEndString = '</select><img src="{{ url_for("static", filename="icons/alert-triangle.svg") }}"></div> </td> <td width="18%"> <div class="reverzInputDiv"><input autocomplete="off" type="text" class="form-control givenInvNum reverzInput" /><img src="{{ url_for("static", filename="icons/alert-triangle.svg") }}"></div></td> <td width="7%"></td></tr>';
+                       var letMeDoTheEndRemoveString = '</select><img src="{{ url_for("static", filename="icons/alert-triangle.svg") }}"></div> </td> <td width="18%"> <div class="reverzInputDiv"><input autocomplete="off" type="text" class="form-control takenInvNum reverzInput" /><img src="{{ url_for("static", filename="icons/alert-triangle.svg") }}"></div></td> <td width="7%"></td></tr>';
+
+                       var i = 0;
+                       var optionsString = "";
+                       for(i; i < originalEquipmentSize; i++){
+                           var tmp = "<option>" + equipmentArray[i] + "</option>";
+                           optionsString = optionsString + tmp;
+                       }
+                       var optionsString2 = ""
+                       for(i; i < equipmentArray.length; i++){
+                           var tmp = "<option>" + equipmentArray[i] + "</option>";
+                           optionsString2 = optionsString2 + tmp;
+                       }
+                       letMeDoTheString = letMeDoTheString + optionsString2 + "</optgroup>" + optionsString + letMeDoTheEndString;
+                       letMeDoTheRemoveString = letMeDoTheRemoveString + optionsString2 + "</optgroup>" + optionsString + letMeDoTheEndRemoveString;
+
+                       currentEquipmentString = letMeDoTheString;
+                       currentEquipmentRemoveString = letMeDoTheRemoveString;
+                       $('.selectpicker').select2();
+                       $("#id01").css("display", "none");
+                       $('#id01').find('input:text').val('');
+                  });
+                  alert("Uspesno dodano v bazo");
+                  
+              }
+          });
+
+          $("#formInputButton3").click(function(){
+              var ok = true;
+
+              $(".formInput3").each(function(index, el) {
+                  if($(this).val() == "" || $(this).val() == "Izberi ..."){
+                      ok = false;
+                      $(this).siblings('img').css("display", "block");
+                  }
+                  else {
+                      $(this).siblings('img').css("display", "none");
+                  }
+              });
+              if(!ok){
+                  button = $(this);
+                  button.css("animation", "shake 0.82s cubic-bezier(.36,.07,.19,.97) both");
+                  setTimeout(function(){
+                      button.css("animation", "");
+                  }, 820);
+              }
+              else {
+                  $.post( "/addEquipment/type/", { type: $("#type").val()} ).done(function(data){
+                       alert("Uspesno dodano v bazo");
+                       $("#employeeSelect option").eq(1).before($("<optgroup label=\"Novo dodani uporabniki:\"></optgroup>"));
+                       $("#id01").css("display", "none");
+                       $('#id01').find('input:text').val('');
+                  });
+                  alert("Uspesno dodano v bazo");
+                  
+              }
+          });
+
+          $("#formInputButton4").click(function(){
+              var ok = true;
+
+              $(".formInput4").each(function(index, el) {
+                  if($(this).val() == "" || $(this).val() == "Izberi ..."){
+                      ok = false;
+                      $(this).siblings('img').css("display", "block");
+                  }
+                  else {
+                      $(this).siblings('img').css("display", "none");
+                  }
+              });
+              if(!ok){
+                  button = $(this);
+                  button.css("animation", "shake 0.82s cubic-bezier(.36,.07,.19,.97) both");
+                  setTimeout(function(){
+                      button.css("animation", "");
+                  }, 820);
+              }
+              else {
+                  $.post( "/addEquipment/producer/", { producer: $("#producer").val()} ).done(function(data){
+                      alert("Uspesno dodano v bazo");
+                      $("#employeeSelect option").eq(1).before($("<optgroup label=\"Novo dodani uporabniki:\"></optgroup>"));
+                      $("#employeeSelect optgroup").append('<option>Test</option>');
+                      $('#id01').find('input:text').val('');
+                      $("#id01").css("display", "none");
+                  });
+                  alert("Uspesno dodano v bazo");
+              }
+          });
+
+  });
+
+  //Dodaj animacijo pri dodajanju vrstic v tabeli (postavi na zadnjo vrstico, premakni dol in spremeni opacity)
+
+
+</script>
+
+
+<br>
+<br>
+<div class="row w3-animate-opacity" align="center">
+    <div class="col-sm-4">
+        <h4 class="h2Description">Izdana oprema</h4>
+        <label class="switch w3-card-4">
+            <input type="checkbox" id="showGiven">
+            <span class="slider round"></span>
+        </label>
+    </div>
+    <div class="col-sm-4 reverzFormUserDiv">
+        <h4 class="h2Description">Uporabnik:</h4>
+        <div class="reverzInputDiv">
+            <select class="selectpicker reverzInput" id="employeeSelect" data-live-search="true">
+                <option>Izberi ...</option>
+                {% for employee in employees %}
+                    <option>{{employee.name}}</option>
+                {% endfor %}
+            </select>
+            <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}" id="employeeSelectErrorImage">
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <h4 class="h2Description">Vrnjena oprema</h4>
+        <label class="switch w3-card-4">
+            <input type="checkbox" id="showTaken">
+            <span class="slider round"></span>
+        </label>
+    </div>
+</div>
+<hr class="border-2 border-top w3-card-4"/>
+
+<div class="row" id="reverzFormDivWrapper">
+    <div id="reverzFormImageDiv">
+        <div class="w3-animate-bottom w3-card-4" id="reverzFormImageBorderDiv">
+            <header class="w3-container">
+                <h2>Izdelava reverza</h2>
+            </header>
+            <div align="left" id="reverzFormImageDivBody">
+                <p>1. Izberite uporabnika kateremu je bila oprema dana/odvzeta</p>
+                <p>2. Označite ali želite opremo dodati oz. vrniti</p>
+                <p>3. Po želji spremenite nahajališče</p>
+                <p>4. Opremo dodate z gumbom "+" in odstranite s "-"</p>
+                <p>5. Kliknite gumb "Natisni"</p>
+                <p>6. Ste našli napako? Javite na <a href="mailto:kevin.pokerznik@zav-sava.si">kevin.pokerznik@zav-sava.si</a></p>
+            </div>
+            <div id="reverzFormImageDivColors">
+                <div id="reverzFormImageDivRed"></div>
+                <div id="reverzFormImageDivYellow"></div>
+                <div id="reverzFormImageDivGreen"></div>
+            </div>
+        </div>
+    </div>
+    <div class="reverzFormDiv" id="reverzFormWrapperLeft">
+        <div class="container">
+        <label>Lokacija: </label>
+        <div class="reverzFormTableHeader reverzInputDiv">
+            <input type="text" class="form-control locationInput reverzInput" id="givenLocation" style="text-align: center;" autocomplete="off">
+            <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+            <button onclick="document.getElementById('id01').style.display='block'" class="btn w3-card-4 doItButton" id="addLeft">Dodaj manjkajoče podatke</button>
+        </div>
+        <table class="reverzTable w3-animate-left w3-table-all w3-card-4" id="addTable" align="center">
+          <tr>
+           <th width="7%"><button id="addButtonRemove" class="reverzButton btn">-</button></th>
+           <th width="14%"></th>
+           <th width="4%">Zap.št.</th>
+           <th width="50%">Oprema</th>
+           <th width="18%">Inv.št.</th>
+           <th width="7%"><button id="addButton" class="reverzButton btn">+</button></th>
+           </tr>
+        </table>
+        </div>
+    </div>
+    <hr id="reverzFormWrapperHr"/>
+    <div class="reverzFormDiv" id="reverzFormWrapperRight">
+        <div class="container">
+        <label>Lokacija skladišča: </label>
+        <div class="reverzFormTableHeader">
+            <select class="selectpicker form-control locationInput" id="takenLocation">
+                {% for warehouse in warehouses %}
+                <option>{{warehouse.name}}</option>
+                {% endfor %}
+            </select>
+
+            <button onclick="document.getElementById('id01').style.display='block'" class="btn w3-card-4 doItButton" id="addRight">Dodaj manjkajoče podatke</button>
+        </div>
+
+        <table class="reverzTable w3-animate-right w3-table-all w3-card-4" id="removeTable" align="center">
+          <tr>
+               <th width="7%"><button id="removeButtonRemove" class="reverzButton btn">-</button></th>
+               <th width="14%"></th>
+               <th width="4%">Zap.št</th>
+               <th width="50%">Oprema</th>
+               <th width="18%">Inv.št.</th>
+               <th width="7%"><button id="removeButton" class="reverzButton btn">+</button></th>
+          </tr>
+        </table>
+        </div>
+    </div>
+  </div>
+
+
+
+
+
+
+<div align="center">
+    <button type="submit" class="btn w3-card-4 doItButton" id="saveButton">Natisni</button>
+</div>
+
+
+
+
+
+<div class="w3-modal loadingScreen">
+    <div class="w3-modal-content loadingScreenContent">
+      <div class="w3-container">
+        <div class="loader"></div>
+      </div>
+    </div>
+</div>
+
+
+<!-- MODAL -->
+    <div id="id01" class="w3-modal">
+        <div class="w3-modal-content w3-card-4 w3-animate-top">
+
+          <div id="modalContent">
+              <div class="container" align="center" id="addSelectDivContainer">
+                  <div id="addSelectDiv">
+                      <div class="row">
+                          <div class="col-12">
+                              <select class="selectpicker" id="addSelect">
+                                  <option>Uporabnik</option>
+                                  <option>Oprema</option>
+                              </select>
+                              <hr class="w3-card-4">
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              <div id="addMainContainer">
+                  <!-- addUser -->
+                  <div class="container addDivContainer" id="addUserDiv" align="center">
+                      <div class="w3-card-4 addDiv">
+                          <div class="row">
+                                  <div class="col-sm-12 col-md-12 col-lg-6 addLeftCol">
+                                      <div class="addLeftColContent w3-card-4">
+                                          <h2>Dodajte uporabnika</h2>
+                                          <p class="text-white">Tukaj lahko dodate uporabnika</p>
+                                          <img src="{{ url_for('static', filename='icons/userWhite.svg') }}">
+                                      </div>
+                                  </div>
+                                  <div class="col-sm-12 col-md-12 col-lg-6" align="left">
+                                      <div class="inputFormDiv">
+                                          <label for="ime" class="text-large">Ime</label>
+                                          <input autocomplete="off" type="text" id="ime" class="form-control input-lg formInput1" name="ime">
+                                          <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                                      </div>
+
+                                      <div class="inputFormDiv">
+                                          <label for="priimek" class="text-large">Priimek</label>
+                                          <input autocomplete="off" type="text" id="priimek" class="form-control input-lg formInput1" name="priimek"/>
+                                          <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                                      </div>
+
+                                      <div class="inputFormDiv">
+                                          <label for="ezso" class="text-large">EZŠO</label>
+                                          <input autocomplete="off" type="text" id="ezso" class="form-control input-lg formInput1" name="ezso"/>
+                                          <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}" id="ezsoWarning">
+                                      </div>
+
+                                      <div class="inputFormDiv">
+                                          <label for="location" class="text-large">Lokacija</label>
+                                          <input autocomplete="off" type="text" id="location" class="form-control input-lg formInput1" name="location"/>
+                                          <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                                      </div>
+
+                                      <div class="inputFormDiv">
+                                          <label for="enota" class="text-large">Enota</label>
+                                          <br>
+                                          <select class="selectpicker formInput1" id="enota" data-live-search="true" name="enota">
+                                              <option>Izberi ...</option>
+                                              {% for u in units %}
+                                                  <option>{{u.number}}</option>
+                                              {% endfor %}
+                                          </select>
+                                          <br>
+                                          <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                                      </div>
+
+                                      <div class="row" align="center">
+                                          <div class="col-lg-12">
+                                              <button class="btn w3-card-4 doItButton" id="formInputButton1">Dodaj</button>
+                                          </div>
+                                      </div>
+                                  </div>
+                          </div>
+                      </div>
+                  </div>
+                  <!-- addUser -->
+
+                  <!-- addEquipment -->
+                  <div class="container addDivContainer" id="addEquipmentDiv" align="center">
+                      <div class="w3-card-4 addDiv">
+                          <div class="row">
+
+                                  <div class="col-lg-6" align="left">
+                                      <div class="inputFormDiv">
+                                          <label for="tip" class="text-large">Tip opreme</label>
+                                          <br>
+                                          <select class="form-outline selectpicker input-lg formInput2" id="tip" data-live-search="true" name="tip">
+                                              <option>Izberi ...</option>
+                                              {% for t in equipmentTypes %}
+                                                  <option>{{t.name}}</option>
+                                              {% endfor %}
+                                          </select>
+                                          <br>
+                                          <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                                      </div>
+
+                                      <div class="inputFormDiv">
+                                          <label for="znamka" class="text-large">Proizvajalec</label>
+                                          <br>
+                                          <select class="form-outline selectpicker input-lg formInput2" id="znamka" data-live-search="true" name="znamka">
+                                              <option>Izberi ...</option>
+                                              {% for p in producers %}
+                                                  <option>{{p.name}}</option>
+                                              {% endfor %}
+                                          </select>
+                                          <br>
+                                          <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                                      </div>
+
+                                      <div class="inputFormDiv">
+                                          <label for="model" class="text-large">Model</label>
+                                          <input autocomplete="off" type="text" id="model" class="form-control input-lg formInput2" name="model"/>
+                                          <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                                      </div>
+
+                                      <br>
+
+                                      <div class="row" align="center">
+                                          <div class="col-lg-12">
+                                              <button type="submit" class="btn w3-card-4 doItButton" id="formInputButton2">Dodaj</button>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="col-lg-6 addRightCol">
+                                      <div class="addRightColContent w3-card-4">
+                                          <h2>Dodajte opremo</h2>
+                                          <p class="text-white">Tukaj lahko dodate opremo</p>
+                                          <img src="{{ url_for('static', filename='icons/hard-drive.svg') }}">
+                                      </div>
+                                  </div>
+                              </div>
+                      </div>
+                  </div>
+                  <!-- addEquipment -->
+
+
+              </div>
+              </div>
+              <span id="modalExitButton" onclick="document.getElementById('id01').style.display='none'"
+              class="w3-button w3-display-topright">&times;</span>
+
+        </div>
+    </div>
+<!-- MODAL -->
+
+{% endblock %}

@@ -1,0 +1,23 @@
+<div class="vcenter-item flex-column min-vh-100 justify-content-center align-items-center addDivContainer" id="addProducerDiv">
+    <h1 class="display-5">Dodajte proizvajalca opreme preko naslednjega vnosnega polja</h1>
+    {% with messages = get_flashed_messages() %}
+      {% if "je bil" in messages[0] %}
+        <p class="text-primary" style="position: relative">{{messages[0]}}</p>
+      {% elif "ni bil" in messages[0] %}
+      <p class="text-danger" style="position: relative;">{{messages[0]}}</p>
+      {% else  %}
+        <p class="text-danger" style="position: relative; visibility: hidden">DummyText</p>
+      {% endif %}
+    {% endwith %}
+<form action="/addEquipment/producer" method="post" class="d-flex flex-column min-vh-100 align-items-center" id="addForm">
+  <div class="row mb-3" id="mainRow">
+    <div class="col" style="text-align: center;">
+      <div class="form-outline form-control-lg">
+        <input type="text" id="producer" class="form-control input-lg" name="producer"/>
+        <label for="producer" class="text-large" id="lastLable">Proizvajalec</label>
+      </div>
+    </div>
+  </div>
+  <button type="submit" class="btn btn mb-4 btn-lg text-white font-weight-bold" id="submitButton">Dodaj</button>
+  </form>
+  </div>

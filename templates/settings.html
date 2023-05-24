@@ -1,0 +1,178 @@
+{% extends "nav.html" %}
+{% block body %}
+
+<script>
+    $(document).ready(function(){
+        $("#receivedLocation option:contains({{user.settings.receivedLocation}})").attr('selected', 'selected');
+        $("#select2-receivedLocation-container").text("{{user.settings.receivedLocation}}");
+
+
+        $(".doItButton").click(function(){
+            $(".loadingScreen").css("display", "block");
+        });
+        
+    });
+
+    function generate_test(){
+            window.location = "/signatureExample/";
+        }
+</script>
+
+
+<br>
+<form action="/settings/change/", method="post" enctype="multipart/form-data">
+<div align="center">
+<div id="settingsContainer" class="w3-card-4">
+    <div id="settingsContainerDiv" align="center">
+        <h2 class="h3 page-title">Nastavitve</h2>
+        <div class="my-4">
+            <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a id="settingsHeader" class="nav-link active text-white" data-toggle="tab" role="tab" aria-controls="contact" aria-selected="false"><strong>Automatizacija</strong></a>
+                </li>
+            </ul>
+            <strong class="mb-0 settingsTitle">Reverz</strong>
+            <p>Avtomatizacijska pomoč pri izdelavi reverza</p>
+            <div class="list-group mb-5">
+                <div class="list-group-item settingsRowContainer w3-card-4 row">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <strong class="mb-0">Samodejna izbira lokacije uporabnika</strong>
+                            <p class="mb-0">Samodejno izpolni polje lokacije uporabnika glede na predhodno vnesene podatke</p>
+                        </div>
+                        <div class="col-auto">
+                            <div class="custom-control custom-switch">
+                                {% if user.settings.locationAllocation == 1 %}
+                                <label class="switch w3-card-4 custom-control-input"/>
+                                    <input type="checkbox" id="locationAllocation" name="locationAllocation" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                                <span class="custom-control-label"></span>
+                                {% else %}
+                                <label class="switch w3-card-4 custom-control-input"/>
+                                    <input type="checkbox" id="locationAllocation" name="locationAllocation">
+                                    <span class="slider round"></span>
+                                </label>
+                                <span class="custom-control-label"></span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="list-group-item settingsRowContainer w3-card-4 row">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <strong class="mb-0">Samodejna izbira skladišča</strong>
+                            <p class="mb-0">Nastavite vaše primarno skladišče za vrnjeno opremo</p>
+                        </div>
+                        <div class="col-auto">
+                            <div class="custom-control custom-switch">
+
+                                <select class="selectpicker" id="receivedLocation" name="receivedLocation">
+                                    {% for warehouse in warehouses %}
+                                    <option>{{warehouse.name}}</option>
+                                    {% endfor %}
+                                </select>
+                                <span class="custom-control-label"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4" />
+            <strong class="mb-0 settingsTitle">Tema</strong>
+            <p>Izberite temo izgleda aplikacije</p>
+            <div class="list-group mb-5">
+                <div class="list-group-item settingsRowContainer w3-card-4 row">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <strong class="mb-0">Tema</strong>
+                            <p class="mb-0">Izberite med svetlo in temno temo (coming soon)</p>
+                        </div>
+                        <div class="col-auto">
+                            <div class="custom-control custom-switch">
+                                <select class="form-select form-select-lg selectpicker" id="theme" name="theme" aria-label=".form-select-lg example" disabled>
+                                 {% if user.settings.theme == 0 %}
+                                  <option value=0>Temna</option>
+                                  <option value=1>Svetla</option>
+                                  {% else %}
+                                  <option value=1>Svetla</option>
+                                  <option value=0>Temna</option>
+                                  {% endif %}
+                                </select>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+                <strong class="mb-0 settingsTitle">Podpisovanje</strong>
+                <p>Samodejno dodajanje podpisa reverzom</p>
+                <div class="list-group mb-5">
+
+                    <div class="list-group-item settingsRowContainer w3-card-4 row">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <strong class="mb-0">Uporabljaj podpis</strong>
+                            <p class="mb-0">Označite, če želite, da se vaš podpis samodejno prilepi na PDF datoteko reverza</p>
+                        </div>
+                        <div class="col-auto">
+                            <div class="custom-control custom-switch">
+                                {% if user.settings.useSignature == 1 %}
+                                <label class="switch w3-card-4 custom-control-input"/>
+                                    <input type="checkbox" id="useSignature" name="useSignature" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                                <span class="custom-control-label"></span>
+                                {% else %}
+                                <label class="switch w3-card-4 custom-control-input"/>
+                                    <input type="checkbox" id="useSignature" name="useSignature">
+                                    <span class="slider round"></span>
+                                </label>
+                                <span class="custom-control-label"></span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="list-group-item settingsRowContainer w3-card-4 row">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <strong class="mb-0">Vaš podpis</strong>
+                                <p class="mb-0">Izberite sliko podpisa, ki bo dodana vašim reverzom (Slika mora biti formata PNG, JPG ali GIF. Pri skeniranju podpisa priporočamo ločljivost 300 dpi in uporabo alkoholnega flumastra.)</p>
+                            </div>
+                            <div class="col-auto">
+                                  <input type="file" class="searchFieldInput form-control input-lg" id="signatureFile" name="signatureFile" accept="image/*">
+                                  <br>
+                                  {% if signatureFile == 1 %}
+                                  <input class="w3-btn w3-border" style="background-color: #00a180; color: white !important;" type="button" onclick="generate_test()" value="Preveri trenutno ŽE SHRANJEN podpis">
+                                  {% else %}
+                                  <input class="w3-btn w3-border" style="background-color: #00a180; color: white !important;" type="button" onclick="generate_test()" value="Preveri trenutno ŽE SHRANJEN podpis" disabled>
+                                  {% endif %}
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+
+            </div> 
+            <div align="center">
+                <button type="submit" class="btn doItButton" name="button">Shrani</button>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+
+
+<div class="w3-modal loadingScreen">
+    <div class="w3-modal-content loadingScreenContent">
+      <div class="w3-container">
+        <div class="loader"></div>
+      </div>
+    </div>
+</div>
+
+
+{% endblock %}

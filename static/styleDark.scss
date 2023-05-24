@@ -1,0 +1,979 @@
+/* https://coolors.co/palette/ef476f-ffd166-06d6a0-118ab2-073b4c */
+/* https://blog.stackfindover.com/css-border-animation-examples/ */
+
+    /* VARIABLES */
+    $black: #222221;
+    $blackGray: #444749;
+    $white: #ffffff;
+    $whiteGray: #d6d6d6;
+    $darkGreen: #009b7f;
+    $green: #80c2b1;
+    $lightGreen: #c7e1d9;
+    $white1: #dadada;
+    $white2: #e3e3e3;
+    $white3: #ededed;
+    $whiteGray: #ccc;
+    $gray: #595d5f;
+    $lightGray: #c6c6c6;
+    $blackBlack: #1d1d1b;
+    /* VARIABLES */
+
+
+
+    /* ALL */
+    body{}
+
+    /* width */
+   ::-webkit-scrollbar {
+     width: 10px;
+   }
+
+   /* Track */
+   ::-webkit-scrollbar-track {
+     background: #f1f1f1;
+   }
+
+   /* Handle */
+   ::-webkit-scrollbar-thumb {
+     background: #888;
+   }
+
+   /* Handle on hover */
+   ::-webkit-scrollbar-thumb:hover {
+     background: #555;
+     border: 1px solid $white;
+   }
+
+    body{
+        background-color: $black;
+    }
+
+    .form-control {
+        background-color: $blackBlack !important;
+        border-color: $blackGray !important;
+        color: $white !important;
+    }
+
+    a:hover {
+        color: $green;
+    }
+
+    @media (max-width: 767px) {
+        .col-md-12 {
+            margin-top:20px;
+        }
+    }
+
+    html {
+        -webkit-text-size-adjust: 100%;
+    }
+
+    .form-control:focus {
+        border-color: $green;
+        box-shadow: inset 0 1px 1px #051812, 0 0 8px $green;
+    }
+
+    @font-face {
+        src: url(fonts/brandon.otf);
+        font-family: savaBrandon;
+    }
+    @font-face {
+        src: url(fonts/brandonBold.otf);
+        font-family: savaBrandonBold;
+    }
+
+    .savaLogoWithText {
+        max-height: 3.125em;
+    }
+
+    body {
+        font-family: savaBrandon !important;
+        font-size: 15px;
+    }
+
+    w3-panel {
+        margin-top: -10px;
+    }
+    h4, label, h2 {
+        color: $white;
+        font-family: savaBrandonBold !important;
+    }
+    hr {
+        opacity: 1;
+        background-color: $black;
+        color: $darkGreen;
+    }
+
+    .text-black {
+        color: $white;
+    }
+    .text-white {
+        color: $black;
+    }
+    .text-sava {
+        color: $white;
+    }
+
+   .switch {
+         position: relative;
+         display: inline-block;
+         width: 60px;
+         height: 34px;
+         border-radius: 60px;
+   }
+
+   .switch input {
+         opacity: 0;
+         width: 0;
+         height: 0;
+   }
+
+   .slider {
+         position: absolute;
+         cursor: pointer;
+         top: 0;
+         left: 0;
+         right: 0;
+         bottom: 0;
+         background-color: #ccc;
+         -webkit-transition: .4s;
+         transition: .4s;
+   }
+
+   .slider:before {
+         position: absolute;
+         content: "";
+         height: 26px;
+         width: 26px;
+         left: 4px;
+         bottom: 4px;
+         background-color: white;
+         -webkit-transition: .4s;
+         transition: .4s;
+   }
+
+   input:checked + .slider {
+       background-color: $darkGreen;
+   }
+
+   input:focus + .slider {
+       box-shadow: 0 0 1px $darkGreen;
+   }
+
+   input:checked + .slider:before {
+         -webkit-transform: translateX(26px);
+         -ms-transform: translateX(26px);
+         transform: translateX(26px);
+   }
+
+   .slider.round {
+       border-radius: 34px;
+   }
+
+   .slider.round:before {
+       border-radius: 50%;
+   }
+
+   .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+       background-color: $blackBlack;
+   }
+   .select2-container--default .select2-results__option--selected {
+
+   }
+    /* ALL */
+
+
+    /*LOGIN*/
+    #loginCardContainer{
+        margin-top: 10%;
+    }
+    #loginCard {
+        width: 360px;
+        height: 460px;
+        padding: 48px;
+        position: relative;
+        background-color: $white;
+    }
+    #loginCard h2 {
+        margin-top: 30px;
+    }
+    #loginCard input {
+        background-color: #e6e6e6;
+    }
+
+    #loginCardImage {
+        position: absolute;
+        transform: scale(0.65);
+        top: 0px;
+        left: -24px;
+
+    }
+    #loginBackground{
+        position: absolute;
+        z-index: -3;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+    }
+    #loginBackgroundDiv{
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("pictures/loginBackground.jpg");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        webkit-filter: blur(5px);
+        -moz-filter: blur(5px);
+        -o-filter: blur(5px);
+        -ms-filter: blur(5px);
+        filter: blur(5px);
+    }
+    #loginButton {
+        font-weight: bold;
+        padding: 10px;
+        width: 40%;
+        position: relative;
+        background-color: $darkGreen;
+        color: $white;
+    }
+    #loginCard input {
+        margin-bottom: 5px;
+    }
+
+    /*LOGIN*/
+
+    /* NAV */
+
+
+    #mainNav {
+        background-color: $black;
+        border-bottom: 2px solid rgba(0, 0, 0, 0);
+        transition: border-bottom 1s ease;
+    }
+
+    #navbarSupportedContent a {
+        color: $white;
+        font-family: savaBrandonBold;
+        padding: 5px;
+        position: relative;
+    }
+
+    #navbarSupportedContent a::before, #navbarSupportedContent a::after {
+      box-sizing: inherit;
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+    #navbarSupportedContent a::before, #navbarSupportedContent a::after {
+      border: 2px solid transparent;
+      width: 0;
+      height: 0;
+    }
+    #navbarSupportedContent a::before {
+      top: 0;
+      left: 0;
+    }
+    #navbarSupportedContent a::after {
+      bottom: 0;
+      right: 0;
+    }
+    #navbarSupportedContent a:hover::before, #navbarSupportedContent a:hover::after {
+      width: 100%;
+      height: 100%;
+    }
+    #navbarSupportedContent a:hover::before {
+      border-top-color: $white;
+      border-right-color: $white;
+      transition: width 0.1s linear, height 0.1s linear 0.1s
+    }
+    #navbarSupportedContent a:hover::after {
+      border-bottom-color: $white;
+      border-left-color: $white;
+      transition: border-color 0s linear 0.2s, width 0.1s linear 0.2s, height 0.1s linear 0.3s;
+    }
+    #navbarSupportedContent a img{
+        margin-bottom: 5px;
+        margin-right: 3px;
+    }
+
+    /* NAV */
+
+    /* HOME */
+
+    #homeHr {
+        opacity: 0;
+    }
+
+    #homeP {
+        opacity: 0;
+        color: $whiteGray;
+    }
+
+    .selectCard a {
+        text-decoration: none;
+    }
+    .selectCard{
+        opacity: 0;
+        cursor: pointer;
+        background-color: $black;
+        border: 0px solid $black !important;
+    }
+    .selectCard:hover{
+        transform: scale(1.05);
+
+    }
+
+    #reverzCardText{
+        border: none;
+        background-color: $white1;
+    }
+    #searchCardText{
+        border: none;
+        background-color: $white1;
+    }
+    #addCardText{
+        border: none;
+        background-color: $white1;
+    }
+
+
+    @media (max-width: 992px) {
+        .selectCard{
+            margin-bottom: 48px;
+        }
+    }
+
+    /* HOME */
+
+    /* REVERZ-FORM */
+
+    #reverzFormUserDiv {
+        margin-bottom: 30px;
+        border: 2px solid $darkGreen !important;
+        border-left: 2px solid $darkGreen;
+    }
+    #employeeSelect {
+        width: 300px;
+    }
+    #reverzFormDivWrapper {
+        display: flex;
+    }
+    #reverzFormDivWrapper table {
+        margin-top: 10px;
+    }
+    .reverzFormTableHeader {
+        position: relative;
+    }
+    .reverzFormTableHeader button{
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 36px;
+        font-size: 17px;
+        background-color: $white;
+    }
+    .w3-table-all tr, .w3-table-all {
+        border-color: $black;
+        color: $white;
+    }
+    .w3-table-all tr:nth-child(even) {
+        background-color: $gray !important;
+    }
+    .w3-table-all tr:nth-child(odd) {
+        background-color: $blackGray !important;
+    }
+
+    #reverzFormImageDiv {
+        position: absolute;
+        opacity: 1;
+        top: 1200;
+        z-index: -1;
+        width: 480px;
+        left:0;
+        right:0;
+        margin-top: 4%;
+        margin-left:auto;
+        margin-right:auto;
+        text-align: center;
+        transform: scale(1.15);
+        transition: opacity 0.2s linear, margin 0.2s ease-out;
+
+    }
+    #reverzFormImageDiv header {
+        background-color: $white1;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+    #reverzFormImageDiv h2 {
+        color: $black;
+    }
+    #reverzFormImageDiv #reverzFormImage{
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
+    }
+    #reverzFormImageDiv h2 {
+        color: $black;
+    }
+    #reverzFormImageBorderDiv{
+        border-radius: 6px;
+    }
+    #reverzFormImageDivBody {
+        padding: 24px;
+        background-color: $blackGray;
+        color: $white;
+    }
+    #reverzFormImageDivColors{
+        column-count: 3;
+        height: 25px;
+        column-gap: 0px;
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+    }
+    #reverzFormImageDivRed {
+        height: 100%;
+        background-color: $white1;
+        border-bottom-left-radius: 6px;
+    }
+    #reverzFormImageDivYellow {
+        height: 100%;
+        background-color: $white1;
+    }
+    #reverzFormImageDivGreen {
+        height: 100%;
+        background-color: $white1;
+        border-bottom-right-radius: 6px;
+    }
+
+    .locationInput {
+        width: 196px !important;
+    }
+
+
+    #reverzFormWrapperLeft, #reverzFormWrapperRight {
+        padding: 0;
+        width: 0%;
+        pointer-events: none;
+        opacity: 0;
+
+        transition: width 0.5s ease-out, opacity 0.2s ease-in;
+    }
+    #addTable .select2, #removeTable .select2  {
+        width:100% !important;
+    }
+    #reverzFormWrapperHr {
+        display: none;
+    }
+
+    .reverzTable td, .reverzTable th, .reverzTable input{
+        text-align: center;
+    }
+
+    .reverzTable tr {
+        transition: transform 0.35s ease-in, opacity 0.3s linear;
+    }
+
+    .reverzInputDiv {
+        position: relative;
+    }
+    .reverzInputDiv img {
+        position: absolute;
+        top: 7px;
+        left: 8px;
+        display: none;
+    }
+
+    #employeeSelectErrorImage {
+        left: 104px;
+    }
+
+
+    .reverzButton {
+        font-weight: bold;
+        color: $white;
+    }
+
+    .select2-selection__rendered {
+        line-height: 218% !important;
+        background-color: $blackBlack !important;
+    }
+    .select2-container .select2-selection--single {
+        height: 100% !important;
+        border-color: $blackGray;
+    }
+
+    .select2-selection__arrow {
+        height: 100% !important;
+        border-color: $blackGray;
+    }
+    .select2-container .select2-selection--single {
+        display: grid;
+        background-color: $blackBlack !important;
+    }
+    .select2-search {
+        background-color: $white !important;
+    }
+    .select2-search input{
+        border-color: $white !important;
+    }
+    .select2 * {
+        color: $white !important;
+    }
+    .select2-dropdown {
+        background-color: $white !important;
+        border-color: $white !important;
+        border-radius: 0px;
+        color: $black;
+    }
+
+    #addTable .reverzButton {
+        background-color: $white !important;
+        color: $blackBlack;
+    }
+    #removeTable .reverzButton {
+        background-color: $white !important;
+        color: $blackBlack;
+    }
+    #removeTable .reverzButton:hover {
+        background-color: $whiteGray !important;
+    }
+    #addTable .reverzButton:hover {
+        background-color: $whiteGray !important;
+    }
+
+    #saveButton {
+        margin-top: 30px;
+        opacity: 0;
+        width: 15%;
+        height: 60px;
+    }
+    .doItButton {
+        background-color: $white1;
+        color: $black;
+        padding: 5px;
+        position: relative;
+        font-family: savaBrandonBold;
+        font-size: 20px;
+        transition: opacity 0.2s ease-in, background-color 0.2s linear;
+    }
+    .doItButton::before, .doItButton::after {
+          box-sizing: inherit;
+          content: '';
+          position: absolute;
+          width: 100%;
+          height: 100%;
+    }
+    .doItButton::before, .doItButton::after {
+          border: 2px solid transparent;
+          border-radius: 4px;
+          width: 0;
+          height: 0;
+    }
+    .doItButton::before {
+          top: 0;
+          left: 0;
+    }
+    .doItButton::after {
+          bottom: 0;
+          right: 0;
+    }
+    .doItButton:hover{
+        background-color: $blackGray;
+    }
+
+    .doItButton:hover::before, .doItButton:hover::after {
+          width: 100%;
+          height: 100%;
+    }
+    .doItButton:hover::before {
+          border-top-color: $white;
+          border-right-color: $white;
+          transition: width 0.2s linear, height 0.2s linear 0.2s
+    }
+    .doItButton:hover::after {
+          border-bottom-color: $white;
+          border-left-color: $white;
+          transition: border-color 0s linear 0.4s, width 0.2s linear 0.4s, height 0.2s linear 0.6s;
+    }
+    .btn:hover{
+        color: $white !important;
+    }
+
+        /* MODAL */
+        #modalContent {
+            background-color: $black;
+            padding: 120px;
+            padding-top: 10px;
+            top: -100px;
+            margin-bottom: 12px;
+        }
+        #id01 {
+            text-align: center;
+            padding-top: 20px;
+        }
+        #modalExitButton{
+            font-size: 22px;
+        }
+        #modalHeader{
+            color: $white;
+            font-weight: bold;
+            background-color: $darkGreen;
+        }
+
+
+        @media (max-width: 992px) {
+            .w3-modal .addLeftCol {
+                height: 250px;
+                margin-bottom: 68px;
+            }
+            .w3-modal .addLeftColContent {
+                margin-right: auto;
+            }
+            .w3-modal .addRightCol {
+                height: 250px;
+                margin-top: 110px;
+            }
+            .w3-modal .addRightColContent {
+                margin-left: auto;
+            }
+            #modalContent {
+                padding: 24px;
+                padding-top: 10px;
+            }
+        }
+
+        /* MODAL */
+
+
+    @media (max-width: 992px) {
+        #reverzFormWrapperHr {
+            display: block;
+            visibility: hidden;
+        }
+    }
+    /* REVERZ-FORM */
+
+    /* ADD */
+    #addSelectDivContainer {
+        margin-bottom: 48px;
+        margin-top: 16px;
+    }
+    #addSelectDiv{
+        width: 760px;
+    }
+    #addSelectDiv .select2 {
+        width: 30% !important;
+    }
+    #addSelectDiv {
+        display: table-cell;
+    }
+    #addSelectDiv {
+        opacity: 0;
+    }
+    .addDivContainer {
+        opacity: 0;
+        display: none;
+        transition: opacity 0.5s ease-out;
+    }
+    .addDiv{
+        width: 760px;
+        display: table-cell;
+        text-align: center;
+        background-color: $blackGray;
+        padding: 48px;
+    }
+    .addDiv .select2 {
+        width: 100% !important;
+    }
+
+    .addDivSmall {
+        position: relative;
+        width: 412px;
+        display: table-cell;
+        text-align: center;
+        padding: 48px;
+    }
+    .addDivSmall .select2 {
+        width: 100% !important;
+    }
+
+    .addLeftCol {
+        position: relative;
+    }
+    .addLeftColContent {
+        position: absolute;
+        top: -70px;
+        left: 0;
+        right: 0;
+        margin-left:auto;
+        margin-right:auto;
+        background-image: linear-gradient(to bottom, $darkGreen, $green);
+        height: 138%;
+        margin-right: 30px;
+        border-radius: 8px;
+        padding: 8px;
+    }
+    .addLeftColContent h2 {
+        font-weight: bold;
+        color: $white;
+    }
+    .addLeftColContent img {
+        margin-top: 92px;
+        transform: scale(2);
+    }
+
+    .addRightCol {
+        position: relative;
+    }
+    .addRightColContent {
+        position: absolute;
+        top: -70px;
+        left: 0;
+        right: 0;
+        margin-left:auto;
+        margin-right:auto;
+        background-image: linear-gradient(to bottom, $darkGreen, $green);
+        height: 152%;
+        margin-left: 30px;
+        border-radius: 8px;
+        padding: 8px;
+    }
+    .addRightColContent h2 {
+        font-weight: bold;
+        color: $white;
+    }
+    .addRightColContent img {
+        margin-top: 76px;
+        transform: scale(2);
+    }
+
+    .addDivSmallContent {
+        position: absolute;
+        top: -30px;
+        left: 0;
+        right: 0;
+        margin-left:auto;
+        margin-right:auto;
+        background-image: linear-gradient(to bottom, $darkGreen, $green);
+        height: 45%;
+        width: 268px;
+        border-radius: 8px;
+        padding: 8px;
+    }
+    .addDivSmallContent h3 {
+        font-weight: bold;
+        color: $white;
+    }
+    .addDiv .doItButton {
+        margin-top: 24px;
+        width: 100%;
+        height: 48px;
+        background-image: linear-gradient(to bottom, $darkGreen, $green);
+    }
+    .addDivSmall .doItButton {
+        margin-top: 24px;
+        width: 100%;
+        height: 48px;
+        background-image: linear-gradient(to bottom, $darkGreen, $green);
+    }
+
+    .inputFormDiv {
+        position: relative;
+    }
+
+    .inputFormDiv img {
+        position: absolute;
+        top: 28px;
+        right: -28px;
+        display: none;
+    }
+
+
+    @keyframes shake {
+      10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+      }
+
+      20%, 80% {
+        transform: translate3d(2px, 0, 0);
+      }
+
+      30%, 50%, 70% {
+        transform: translate3d(-4px, 0, 0);
+      }
+
+      40%, 60% {
+        transform: translate3d(4px, 0, 0);
+      }
+    }
+
+
+    @media (max-width: 576px) {
+        .addLeftCol {
+            height: 250px;
+            margin-bottom: 68px;
+        }
+        .addLeftColContent {
+            margin-right: auto;
+        }
+        .addRightCol {
+            height: 250px;
+            margin-top: 110px;
+        }
+        .addRightColContent {
+            margin-left: auto;
+        }
+    }
+    /* ADD */
+
+    /* SEARCH */
+
+    #searchInputsDiv {
+        width: 100%;
+        transition: width 1s ease;
+    }
+    #searchInputsDiv .doItButton {
+        margin-top: 24px;
+        width: 168px;
+    }
+    #searchInputs {
+        background-color: $blackGray;
+        padding: 33px;
+        margin-bottom: 52px;
+    }
+    #searchInputs .select2 {
+        width:100% !important;
+    }
+    #searchTableDiv {
+        width: 70%;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.3s ease-out;
+    }
+
+    #reverzTable tr:hover {
+        background-color: $lightGreen;
+        cursor: pointer;
+    }
+    #reverzTable tr {
+        transition: background-color 0.17s;
+    }
+
+    #searchPaginationDiv {
+        position: relative;
+        margin-top: 10px;
+    }
+
+    #searchResultCount {
+        position: absolute;
+        top: 0px;
+        font-weight: bold;
+        font-size: 18px;
+        right: 0;
+    }
+
+    #toCSVButton {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 1s;
+    }
+
+    @media (max-width: 992px) {
+        #searchTableDiv {
+            width: 100%;
+        }
+    }
+    /* SEARCH */
+
+    /* REVERZ_SHOW */
+    .reverzShowButton{
+        position: absolute;
+        top: 0;
+        border: none;
+    }
+    #reverzShowButtonPdf {
+        left: 0;
+    }
+    #reverzShowButtonDelete {
+        right: 0;
+    }
+    /* REVERZ_SHOW */
+
+    /*SETTINGS*/
+    #settingsContainer {
+        border-radius: 8px;
+        width: 920px;
+        margin-bottom: 60px;
+        padding: 18px;
+    }
+
+    #settingsContainerDiv {
+        width: 100%;
+        padding-left: 48px;
+        padding-right: 48px;
+        text-align: left;
+    }
+
+    .settingsTitle {
+        font-size: 18px;
+    }
+
+    .settingsRowContainer {
+        margin-bottom: 12px;
+        background-color: #f1f1f1;
+    }
+
+    #settingsHeader {
+        background-color: $darkGreen;
+    }
+    #settingsContainerDiv button {
+        width: 200px;
+    }
+
+    @media (max-width: 992px) {
+        #settingsContainer {
+            width: 90%;
+        }
+    }
+    /*SETTINGS*/
+
+    /*LOADING SCREEN*/
+    .loadingScreenContent {
+        margin-top: 13%;
+        width: 50%;
+        padding: 10px;
+        background-color: transparent;
+    }
+
+    .loader {
+      border: 16px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 16px solid $green;
+      width: 120px;
+      height: 120px;
+      -webkit-animation: spin 2s linear infinite; /* Safari */
+      animation: spin 2s linear infinite;
+      margin-left:  42%;
+    }
+
+    /* Safari */
+    @-webkit-keyframes spin {
+      0% { -webkit-transform: rotate(0deg); }
+      100% { -webkit-transform: rotate(360deg); }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    /*LOADING SCREEN*/

@@ -1,0 +1,124 @@
+{% extends "nav.html" %}
+{% block body %}
+
+<script>
+
+    var imgLoadCounter = 0;
+
+    $("img").on('load', function(){
+        imgLoadCounter = imgLoadCounter + 1;
+        if(imgLoadCounter >= 3){
+            $("#homeP").css("opacity", "1");
+            $("#homeP").css("transition", "opacity 1s ease-in");
+            $("#homeHr").css("opacity", "1");
+            $("#homeHr").css("transition", "opacity 1s ease-in");
+            $(".selectCard").css("opacity", "1");
+            $(".selectCard").css("transition", "opacity 1s linear 0.4s, .3s transform cubic-bezier(.155,1.105,.295,1.12),.3s box-shadow,.3s -webkit-transform cubic-bezier(.155,1.105,.295,1.12)");
+
+        }
+    });
+
+
+</script>
+
+{% if user.settings.administrator == 0 %}
+<br/>
+<br/>
+<div class="container text-center">
+  <h2 class="w3-animate-top">{{sessionUser}}, pozdravljeni v sistemu za izdelavo reverza</h2>
+  <hr class="border-2 border-top w3-card-4" id="homeHr"/>
+  <p id="homeP">Izberite kako želite nadaljevati</p>
+  <br>
+  <div class="row">
+    <div class="col-sm-12 col-md-12 col-lg-4">
+        <div class="card border selectCard">
+            <a href="/reverz">
+                <img src="{{ url_for('static', filename='pictures/reverzCard.jpg') }}" class="img-responsive rounded-top" style="width:100%" alt="Image">
+                <div class="card-body rounded-bottom shadow" id="addCardText">
+                    <p class="card-text fs-5 text-dark">Ustvari reverz</p>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-4">
+        <div class="card border selectCard">
+            <a href="/search">
+                <img src="{{ url_for('static', filename='pictures/loupe.jpg') }}" class="img-responsive rounded-top" style="width:100%" alt="Image">
+                <div class="card-body rounded-bottom shadow" id="addCardText">
+                    <p class="card-text fs-5 text-dark">Poišči opremo</p>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-4">
+        <div class="card border selectCard">
+            <a href="/add">
+                <img src="{{ url_for('static', filename='pictures/plus.jpg') }}" class="img-responsive rounded-top" style="width:100%" alt="Image">
+                <div class="card-body rounded-bottom shadow" id="addCardText">
+                    <p class="card-text fs-5 text-dark">Dodaj podatke</p>
+                </div>
+            </a>
+        </div>
+    </div>
+  </div>
+</div><br>
+
+{% elif user.settings.administrator == 1 %}
+
+<br/>
+<br/>
+<div class="container text-center">
+  <h2 class="w3-animate-top">{{sessionUser}}, pozdravljeni v sistemu za izdelavo reverza</h2>
+  <hr class="border-2 border-top w3-card-4" id="homeHr"/>
+  <p id="homeP">Izberite kako želite nadaljevati</p>
+  <br>
+  <div class="row">
+    <div class="col-sm-12 col-md-12 col-lg-3">
+        <div class="card border selectCard">
+            <a href="/reverz">
+                <img src="{{ url_for('static', filename='pictures/reverzCard.jpg') }}" class="img-responsive rounded-top" style="width:100%" alt="Image">
+                <div class="card-body rounded-bottom shadow" id="addCardText">
+                    <p class="card-text fs-5 text-dark">Ustvari reverz</p>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-3">
+        <div class="card border selectCard">
+            <a href="/search">
+                <img src="{{ url_for('static', filename='pictures/loupe.jpg') }}" class="img-responsive rounded-top" style="width:100%" alt="Image">
+                <div class="card-body rounded-bottom shadow" id="addCardText">
+                    <p class="card-text fs-5 text-dark">Poišči opremo</p>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-3">
+        <div class="card border selectCard">
+            <a href="/add">
+                <img src="{{ url_for('static', filename='pictures/plus.jpg') }}" class="img-responsive rounded-top" style="width:100%" alt="Image">
+                <div class="card-body rounded-bottom shadow" id="addCardText">
+                    <p class="card-text fs-5 text-dark">Dodaj podatke</p>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-3">
+        <div class="card border selectCard">
+            <a href="/administration">
+                <img src="{{ url_for('static', filename='pictures/administrator.png') }}" class="img-responsive rounded-top" style="width:100%" alt="Image">
+                <div class="card-body rounded-bottom shadow" id="addCardText">
+                    <p class="card-text fs-5 text-dark">Plošča za skrbnike</p>
+                </div>
+            </a>
+        </div>
+    </div>
+  </div>
+
+
+</div><br>
+{% endif %}
+
+
+
+{% endblock %}

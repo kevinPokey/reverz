@@ -1,0 +1,589 @@
+{% extends "nav.html" %}
+{% block body %}
+
+<script>
+    $(document).ready(function(){
+
+        $('select').prop('selectedIndex',0);
+        $('.select2-selection__rendered').text('Izberi...')
+        $('.select2-selection__rendered').val('Izberi...')
+
+        var counter = 0;
+        var tableVisible = false;
+        var page = 1;
+        var maxPage = 1;
+        var sessionUser = "{{user.username}}";
+        var administrator = "{{user.settings.administrator}}"
+        var currentDeleteId;
+
+        $("#page1").css("background-color", "#c7e1d9");
+
+        window.onresize = function() {
+            if (window.innerWidth > 992 && tableVisible) {
+                $("#searchInputsDiv").css("width", "30%");
+            }
+            else {
+                $("#searchInputsDiv").css("width", "100%");
+            }
+        }
+
+        $("#reverzTable").children('tr').remove()
+
+        function pagaginationFix(pageNum){
+            if (pageNum > 0){
+                return pageNum;
+            }
+            else{
+                return "-"
+            }
+        }
+
+        $('input').change(function(){
+            if($(this).val() != ""){
+                 $(this).siblings('div').css("transform", "translateX(-50px)");
+            }
+            else{
+                $(this).siblings('div').css("transform", "translateX(0px)");
+            }
+        });
+
+        $('select').change(function(){
+            if($(this).val() != "Izberi..."){
+                $(this).siblings('div').css("transform", "translateX(-50px)");
+            }
+            else{
+                $(this).siblings('div').css("transform", "translateX(0px)");
+            }
+        });
+        $('.search_delete_div div').click(function(){
+            $(this).closest(".search_delete_div").find('input').val("");
+            $(this).closest(".search_delete_div").find('select').prop('selectedIndex',0);
+            $(this).closest(".search_delete_div").find('.select2-selection__rendered').text('Izberi...')
+            $(this).closest(".search_delete_div").find('.select2-selection__rendered').val('Izberi...')
+
+            $(this).css("transform", "translateX(0px)");
+            updateInfo(false);
+
+        });
+
+        function updateInfo(thang){
+            
+            if(!tableVisible){
+                if (window.innerWidth > 992) {
+                    $("#searchInputsDiv").css("width", "30%");
+                }
+                setTimeout(function(){
+                    $("#searchTableDiv").css("display", "table");
+                }, 1050);
+            }
+
+            var inputFields = {};
+            inputFields.invNum = $('input[id=invNum]').val();
+            inputFields.status = $('select[id=status]').val();
+            inputFields.warehouse = $('select[id=warehouse]').val();
+            inputFields.issuer = $('select[id=issuer]').val();
+            inputFields.user = $('select[id=user]').val();
+            inputFields.type = $('select[id=type]').val();
+            inputFields.producer = $('select[id=producer]').val();
+            inputFields.model = $('input[id=model]').val();
+            inputFields.dateStart = $('input[id=dateStart]').val();
+            inputFields.dateEnd = $('input[id=dateEnd]').val();
+            inputFields.toCSV = thang;
+            inputFields.page = page;
+
+            $.ajax({
+                type: "POST",
+                url: "/search/",
+                data: JSON.stringify(inputFields),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(result) {
+                    if(thang){
+                        window.location = '/download/csv';
+                    }
+
+                    else if(tableVisible){
+                        $("#searchTableDiv").css("opacity", "0");
+                        
+                        setTimeout(function(){
+                            $("#reverzTable").children('tr').remove();
+                            $.each(result, function (index, item) {
+                                maxPage = item.maxPage;
+                                position = index + 1;
+                                $("#searchResultCount").text("Rezultatov:  " + item.equipmentCount);
+                                if (item.issuer == sessionUser || administrator == "1"){
+                                    $("#reverzTable").append('<tr class="rowTable" id="' + item.id + '"><td>' + (position + ((page - 1) * 17)) + '</td><td>' + item.invNum + '</td><td>' + item.equipmentName + '</td><td>' + item.status + '</td><td>' + item.user + '</td><td class="lastTd">' + item.date + '</td><td class="reverzTableDeleteTr"><div><img src="{{ url_for("static", filename="icons/x.svg") }}"></div></td></tr>');
+                                }
+                                else{
+                                    $("#reverzTable").append('<tr class="rowTable" id="' + item.id + '"><td>' + (position + ((page - 1) * 17)) + '</td><td>' + item.invNum + '</td><td>' + item.equipmentName + '</td><td>' + item.status + '</td><td>' + item.user + '</td><td class="lastTd">' + item.date + '</td></tr>');
+                                }
+                                if (page == maxPage){
+                                    if(page == 1){
+                                        $("#page1").text("-");
+                                        $("#page2").text("-");
+                                        $("#page3").text("-");
+                                        $("#page4").text(page);
+                                    }
+                                    else {
+                                        $("#page1").text(pagaginationFix(page - 3));
+                                        $("#page2").text(pagaginationFix(page - 2));
+                                        $("#page3").text(pagaginationFix(page - 1));
+                                        $("#page4").text(page);
+                                    }
+
+                                    $("#page1").css("background-color", "");
+                                    $("#page2").css("background-color", "");
+                                    $("#page3").css("background-color", "");
+                                    $("#page4").css("background-color", "#c7e1d9");
+                                }
+                                else if (page == maxPage - 1){
+                                    if(page == 1){
+                                        $("#page1").text("-");
+                                        $("#page2").text("-");
+                                        $("#page3").text(pagaginationFix(page));
+                                        $("#page4").text(pagaginationFix(page + 1));
+                                    }
+                                    else {
+                                        $("#page1").text(pagaginationFix(page - 2));
+                                        $("#page2").text(pagaginationFix(page - 1));
+                                        $("#page3").text(pagaginationFix(page));
+                                        $("#page4").text(pagaginationFix(page + 1));
+                                    }
+
+                                    $("#page1").css("background-color", "");
+                                    $("#page2").css("background-color", "");
+                                    $("#page4").css("background-color", "");
+                                    $("#page3").css("background-color", "#c7e1d9");
+                                }
+                                else if (page == 1){
+                                    $("#page1").text(1);
+                                    $("#page2").text(2);
+                                    $("#page3").text(3);
+                                    $("#page4").text(4);
+
+                                    $("#page2").css("background-color", "");
+                                    $("#page3").css("background-color", "");
+                                    $("#page4").css("background-color", "");
+                                    $("#page1").css("background-color", "#c7e1d9");
+                                }
+                                else{
+                                    $("#page1").text(pagaginationFix(page - 1));
+                                    $("#page2").text(pagaginationFix(page));
+                                    $("#page3").text(pagaginationFix(page + 1));
+                                    $("#page4").text(pagaginationFix(page + 2));
+
+                                    $("#page1").css("background-color", "");
+                                    $("#page3").css("background-color", "");
+                                    $("#page4").css("background-color", "");
+                                    $("#page2").css("background-color", "#c7e1d9");
+                                }
+
+                            });
+                            if($("#reverzTable tr").length == 0){
+                                $("#searchResultCount").text("Rezultatov:  0");
+                            }
+                            $("#searchTableDiv").css("opacity", "1");
+                        }, 600);
+
+                    }
+                    else {
+                        $("#toCSVButton").css("opacity", "1");
+                        $("#toCSVButton").css("pointer-events", "auto");
+
+                        $("#reverzTable").children('tr').remove();
+                        $.each(result, function (index, item) {
+                            maxPage = item.maxPage;
+                            position = index + 1;
+                            $("#searchResultCount").text("Rezultatov:  " + item.equipmentCount);
+                            if (item.issuer == sessionUser || administrator == "1"){
+                                    $("#reverzTable").append('<tr class="rowTable" id="' + item.id + '"><td>' + (position + ((page - 1) * 17)) + '</td><td>' + item.invNum + '</td><td>' + item.equipmentName + '</td><td>' + item.status + '</td><td>' + item.user + '</td><td class="lastTd">' + item.date + '</td><td class="reverzTableDeleteTr"><div><img src="{{ url_for("static", filename="icons/x.svg") }}"></div></td></tr>');
+                                }
+                                else{
+                                    $("#reverzTable").append('<tr class="rowTable" id="' + item.id + '"><td>' + (position + ((page - 1) * 17)) + '</td><td>' + item.invNum + '</td><td>' + item.equipmentName + '</td><td>' + item.status + '</td><td>' + item.user + '</td><td class="lastTd">' + item.date + '</td></tr>');
+                                }
+                                if (page == maxPage){
+                                    if(page == 1){
+                                        $("#page1").text("-");
+                                        $("#page2").text("-");
+                                        $("#page3").text("-");
+                                        $("#page4").text(page);
+                                    }
+                                    else {
+                                        $("#page1").text(pagaginationFix(page - 3));
+                                        $("#page2").text(pagaginationFix(page - 2));
+                                        $("#page3").text(pagaginationFix(page - 1));
+                                        $("#page4").text(page);
+                                    }
+
+                                    $("#page1").css("background-color", "");
+                                    $("#page2").css("background-color", "");
+                                    $("#page3").css("background-color", "");
+                                    $("#page4").css("background-color", "#c7e1d9");
+                                }
+                                else if (page == maxPage - 1){
+                                    if(page == 1){
+                                        $("#page1").text("-");
+                                        $("#page2").text("-");
+                                        $("#page3").text(pagaginationFix(page));
+                                        $("#page4").text(pagaginationFix(page + 1));
+                                    }
+                                    else {
+                                        $("#page1").text(pagaginationFix(page - 2));
+                                        $("#page2").text(pagaginationFix(page - 1));
+                                        $("#page3").text(pagaginationFix(page));
+                                        $("#page4").text(pagaginationFix(page + 1));
+                                    }
+
+                                    $("#page1").css("background-color", "");
+                                    $("#page2").css("background-color", "");
+                                    $("#page4").css("background-color", "");
+                                    $("#page3").css("background-color", "#c7e1d9");
+                                }
+                                else if (page == 1){
+                                    $("#page1").text(1);
+                                    $("#page2").text(2);
+                                    $("#page3").text(3);
+                                    $("#page4").text(4);
+
+                                    $("#page2").css("background-color", "");
+                                    $("#page3").css("background-color", "");
+                                    $("#page4").css("background-color", "");
+                                    $("#page1").css("background-color", "#c7e1d9");
+                                }
+                                else{
+                                    $("#page1").text(pagaginationFix(page - 1));
+                                    $("#page2").text(pagaginationFix(page));
+                                    $("#page3").text(pagaginationFix(page + 1));
+                                    $("#page4").text(pagaginationFix(page + 2));
+
+                                    $("#page1").css("background-color", "");
+                                    $("#page3").css("background-color", "");
+                                    $("#page4").css("background-color", "");
+                                    $("#page2").css("background-color", "#c7e1d9");
+                                }
+
+                        });
+                    }
+                    if(!tableVisible){
+                        setTimeout(function(){
+                            $("#searchTableDiv").css("opacity", "1");
+                        }, 1050);
+                    }
+                    tableVisible = true;
+                },
+                error: function(errMsg) {
+
+                }
+            });
+        }
+
+        $(".searchFieldInput").change(function(){
+            page = 1;
+		    updateInfo(false);
+	    });
+        $("#toCSVButton").click(function(){
+		    updateInfo(true);
+	    });
+
+        jQuery(document).on('click','.rowTable td:not(.reverzTableDeleteTr)', function(){
+            reverz_id = $(this).closest('tr').attr("id");
+            window.open("/reverzShow/" + reverz_id);
+        });
+        jQuery(document).on('click','#modalSearchButton', function(){
+            
+            $("#id01").css("display", "none");
+            var reverz = {};
+            reverz.id = currentDeleteId;
+
+            $.ajax({
+                type: "POST",
+                url: "/deleteReverz/",
+                data: JSON.stringify(reverz),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(result) {
+                    updateInfo(false);
+                },
+                error: function(errMsg) {
+                    alert("an error has occured");
+                }
+            });
+
+        });
+        jQuery(document).on('click','.reverzTableDeleteTr div', function(){
+            var tr_id = {};
+            stuff = $(this).parent().parent().attr('id');
+            tr_id.id = stuff.replace("\"","");
+            $.ajax({
+                type: "POST",
+                url: "/equipmentCheck/",
+                data: JSON.stringify(tr_id),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(result) {
+                    var modalDate;
+                    $("#reverzTableModal").children('tr').remove();
+                    $.each(result, function (index, item) {
+                        modalDate = item.date;
+                        currentDeleteId = item.id;
+                        var position = index + 1;
+                        $("#reverzTableModal").append('<tr class="rowTableModal" id="' + item.id + '"><td>' + position + '</td><td>' + item.invNum + '</td><td>' + item.equipmentName + '</td><td>' + item.status + '</td><td>' + item.user + '</td><td class="lastTd">' + item.loc + '</td></tr>');
+                    });
+                    $("#searchModalDate").text("Datum reverza: " + modalDate);
+                    $("#id01").css("display", "block");
+                    $(".rowTable").css("z-index", "0");
+                }
+            });
+        });
+
+        //#reverzTable tr:hover .reverzTableDeleteTr div, .reverzTableDeleteTr div:hover
+
+        $("#pageStart").click(function(event) {
+            page = 1;
+            updateInfo(false);
+        });
+        $("#page1").click(function(event) {
+            if (page == maxPage){
+                page = page - 3;
+                updateInfo(false);
+            }
+            else if(page == maxPage - 1){
+                page = page - 2;
+                updateInfo(false);
+            }
+            else if(page != 1){
+                page = page - 1;
+                updateInfo(false);
+            }
+        });
+        $("#page2").click(function(event) {
+            if (page == maxPage){
+                page = page - 2
+                updateInfo(false);
+            }
+            else if(page == maxPage - 1){
+                page = page - 1;
+                updateInfo(false);
+            }
+            else if(page == 1){
+                page = 2;
+                updateInfo(false);
+            }
+        });
+        $("#page3").click(function(event) {
+            if(page == maxPage){
+                page = page - 1;
+                updateInfo(false);
+            }
+            else if(page == 1){
+                page = page + 2;
+                updateInfo(false);
+            }
+            else if (page != maxPage - 1){
+                page = page + 1;
+                updateInfo(false);
+            }
+        });
+        $("#page4").click(function(event) {
+            if(page == maxPage - 1){
+                page = page + 1;
+                updateInfo(false);
+            }
+            else if(page == 1){
+                page = page + 3;
+                updateInfo(false);
+            }
+            else if (page != maxPage){
+                page = page + 2;
+                updateInfo(false);
+            }
+        });
+        $("#pageEnd").click(function(event) {
+            console.log(maxPage);
+            page = maxPage;
+            updateInfo(false);
+        });
+
+    });
+</script>
+
+
+<br>
+<br>
+<div class="container">
+    <div class="row" id="searchDiv">
+    <div id="searchInputsDiv" class="w3-animate-opacity">
+        <div class="w3-card-4" id="searchInputs" align="left">
+        <form style="width: 90%;margin-left: 5%;">
+            <div class="search_delete_div">
+                <label for="invNum">Inventarna</label>
+                <input type="text" class="searchFieldInput form-control input-lg" id="invNum" placeholder="Inventarna" autocomplete="off">
+                <div><img src="{{ url_for("static", filename="icons/x.svg") }}"></div>
+            </div>
+
+            <div class="search_delete_div">
+                <label for="status">Status</label>
+                <br>
+                <select class="searchFieldInput selectpicker" id="status" data-live-search="true">
+                    <option>Izberi...</option>
+                    <option>A</option>
+                    <option>S</option>
+                </select>
+                <br>
+                <div><img src="{{ url_for("static", filename="icons/x.svg") }}"></div>
+            </div>
+
+            <div class="search_delete_div">
+            <label for="warehouse">Lokacija skladišča</label>
+                <br>
+                <select class="searchFieldInput selectpicker" id="warehouse" data-live-search="true">
+                    <option>Izberi...</option>
+                    {% for t in warehouses %}
+                        <option>{{t.name}}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <div><img src="{{ url_for("static", filename="icons/x.svg") }}"></div>
+            </div>
+
+            <div class="search_delete_div">
+            <label for="issuer">Izdajatelj</label>
+                <br>
+                <select class="searchFieldInput selectpicker" id="issuer" data-live-search="true">
+                    <option>Izberi...</option>
+                    {% for t in issuers %}
+                        <option>{{t.username}}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <div><img src="{{ url_for("static", filename="icons/x.svg") }}"></div>
+            </div>
+
+            <div class="search_delete_div">
+                <label for="user">Uporabnik</label>
+                    <br>
+                    <select class="searchFieldInput selectpicker" id="user" data-live-search="true">
+                    <option>Izberi...</option>
+                    {% for t in employees %}
+                        <option>{{t.name}}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <div><img src="{{ url_for("static", filename="icons/x.svg") }}"></div>
+            </div>
+
+            <div class="search_delete_div">
+            <label for="type">Tip</label>
+                <br>
+                <select class="searchFieldInput selectpicker" id="type" data-live-search="true">
+                    <option>Izberi...</option>
+                    {% for t in equipmentTypes %}
+                        <option>{{t.name}}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <div><img src="{{ url_for("static", filename="icons/x.svg") }}"></div>
+            </div>
+
+            <div class="search_delete_div">
+            <label for="producer">Proizvajalec</label>
+                <br>
+                <select class="searchFieldInput selectpicker" id="producer" data-live-search="true">
+                    <option>Izberi...</option>
+                    {% for p in producers %}
+                        <option>{{p.name}}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <div><img src="{{ url_for("static", filename="icons/x.svg") }}"></div>
+            </div>
+
+            <div class="search_delete_div">
+              <label for="model">Model</label>
+              <input type="text" class="searchFieldInput form-control input-lg" id="model" placeholder="Model" autocomplete="off">
+              <div><img src="{{ url_for("static", filename="icons/x.svg") }}"></div>
+            </div>
+
+            <div class="search_delete_div">
+              <label for="date">Začetni Datum</label>
+              <input type="text" class="searchFieldInput form-control input-lg" id="dateStart" placeholder="začetni datum" autocomplete="off">
+              <div><img src="{{ url_for("static", filename="icons/x.svg") }}"></div>
+            </div>
+
+            <div class="search_delete_div">
+              <label for="date">Končni Datum</label>
+              <input type="text" class="searchFieldInput form-control input-lg" id="dateEnd" placeholder="Končni datum" autocomplete="off">
+              <div><img src="{{ url_for("static", filename="icons/x.svg") }}"></div>
+            </div>
+        </form>
+            <div class="row">
+                <div class="col-sm-12" align="center">
+                    <button class="btn w3-card-4 doItButton" id="toCSVButton">Izvozi v CSV</button>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div id="searchTableDiv">
+            <table class="w3-table-all w3-centered w3-card-4" id="searchTable">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Inventarna št.</th>
+                  <th scope="col">Oprema</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Uporabnik</th>
+                  <th scope="col">Datum</th>
+                </tr>
+              </thead>
+              <tbody id="reverzTable">
+              </tbody>
+            </table>
+            <div class="w3-bar" align="center" id="searchPaginationDiv">
+                <a class="w3-button" value="1" id="pageStart">&laquo;</a>
+                <a class="w3-button" id="page1">1</a>
+                <a class="w3-button" id="page2">2</a>
+                <a class="w3-button" id="page3">3</a>
+                <a class="w3-button" id="page4">4</a>
+                <a class="w3-button" id="pageEnd">&raquo;</a>
+                <p align="right" id="searchResultCount"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL -->
+    <div id="id01" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top" id="searchModalDelete">
+      <header class="w3-container"> 
+        <span id="modalExitButton" onclick="document.getElementById('id01').style.display='none'" 
+        class="w3-button w3-display-topright">&times;</span>
+        <h3>Izbrisali boste reverz, ki vsebuje sledečo opremo</h3>
+        <h6 id="searchModalDate"></h6>
+      </header>
+      <br>
+      <div class="w3-container">
+        <table class="w3-table-all w3-centered w3-card-4" id="searchTableModal">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Inventarna št.</th>
+                  <th scope="col">Oprema</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Uporabnik</th>
+                  <th scope="col">Lokacija</th>
+                </tr>
+              </thead>
+              <tbody id="reverzTableModal">
+              </tbody>
+            </table>
+      </div>
+      <br>
+      <br>
+      <footer class="w3-container">
+           <button type="submit" class="btn w3-card-4" id="modalSearchButton">Izbriši</button>
+      </footer>
+    </div>
+  </div>
+<!-- MODAL -->
+
+{% endblock %}

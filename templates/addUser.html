@@ -1,0 +1,39 @@
+
+<div class="container" align="center">
+    <div class="w3-card-4 addDiv" id="addUserDiv">
+        <form action="/addUser/" method="post" id="addForm" class="row">
+                <div class="col-sm-6 addLeftCol">
+                    <div class="addLeftColContent w3-card-4">
+                        <h2>Dodajte uporabnika</h2>
+                        <p class="text-secondary">Preko naslednjih polj lahko dodaste uporabnika</p>
+                        <img src="{{ url_for('static', filename='icons/userBlue.svg') }}">
+                    </div>
+                </div>
+                <div class="col-sm-6" align="left">
+                    <label for="ime" class="text-large">Ime</label>
+                    <input type="text" id="ime" class="form-control input-lg" name="ime"/>
+
+                    <label for="priimek" class="text-large">Priimek</label>
+                    <input type="text" id="priimek" class="form-control input-lg" name="priimek"/>
+
+                    <label for="ezso" class="text-large">EZŠO</label>
+                    <input type="text" id="ezso" class="form-control input-lg" name="ezso"/>
+
+                    <label for="enota" class="text-large">Enota</label>
+                    <br>
+                    <select class="selectpicker" id="enota" data-live-search="true" name="enota" form="addForm">
+                        {% for u in units %}
+                            <option>{{u.name}}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+
+                    <div class="row" align="center">
+                        <div class="col-sm-12">
+                            <button type="submit" class="btn w3-card-4 doItButton" id="submitButton">Dodaj</button>
+                        </div>
+                    </div>
+                </div>
+        </form>
+    </div>
+</div>

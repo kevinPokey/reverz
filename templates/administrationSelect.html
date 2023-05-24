@@ -1,0 +1,90 @@
+{% extends "nav.html" %}
+{% block body %}
+
+<script>
+
+    $(document).ready(function() {
+    $('#submit-button').click(function() {
+        var checkedUsers = [];
+        var uncheckedUsers = [];
+        $('#users-table input[type="checkbox"]:checked').each(function() {
+            checkedUsers.push($(this).attr('name'));
+        });
+        $('#users-table input[type="checkbox"]:not(:checked)').each(function() {
+            uncheckedUsers.push($(this).attr('name'));
+        });
+
+        var data = {
+            checkedUsers: checkedUsers,
+            uncheckedUsers: uncheckedUsers
+        };
+
+        $.ajax({
+        type: 'POST',
+        url: '/administration/select',
+        data: JSON.stringify(data),
+        contentType: "application/json",
+        success: function(response) {
+            window.location.href = '/administration';
+        },
+        error: function(xhr, status, error) {
+            console.error(error);
+        }
+        });
+    });
+    });
+
+</script>
+
+<br>
+<br>
+<div class="container text-center">
+    <h2 >Določite ali odstranite skrbnike</h2>
+    <hr class="border-2 border-top w3-card-4" id="homeHr"/>
+    <div class="row" id="searchDiv">
+        <div>
+            <table class="w3-table-all w3-centered w3-card-4" id="searchTable">
+              <thead>
+                <tr>
+                  <th scope="col">Uporabnik</th>
+                  <th scope="col">Stanje</th>
+                </tr>
+              </thead>
+              <tbody id="users-table">
+                {% for u in users %}
+                <tr>
+                    <td>{{u.username}}</td>
+                    <td>
+                        {% if u.settings.administrator == 1 %}
+                                <label class="switch w3-card-4 custom-control-input"/>
+                                    <input type="checkbox" name="{{u.username}}" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                                <span class="custom-control-label"></span>
+                                {% else %}
+                                <label class="switch w3-card-4 custom-control-input"/>
+                                    <input type="checkbox" name="{{u.username}}">
+                                    <span class="slider round"></span>
+                                </label>
+                                <span class="custom-control-label"></span>
+                                {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+
+            <br>
+            <br>
+
+                                      <div class="row" align="center">
+                                          <div class="col-lg-12">
+                                              <button type="submit" class="btn w3-card-4 doItButton" id="submit-button">Shrani Nastavitve</button>
+                                          </div>
+                                      </div>
+
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

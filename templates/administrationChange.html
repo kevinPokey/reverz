@@ -1,0 +1,146 @@
+{% extends "nav.html" %}
+{% block body %}
+
+
+<script>
+$(document).ready(function() {
+
+    $("input").val("");
+    $('select').prop('selectedIndex',0);
+    $('.select2-selection__rendered').text('Izberi...')
+    $('.select2-selection__rendered').val('Izberi...')
+    $('input').prop('checked', false);
+
+  $('#employee-select').change(function() {
+    var selectedEmployee = $(this).val();
+
+    var data = {};
+    data.name = selectedEmployee;
+    data.selection = "check";
+    $.ajax({
+      type: 'POST',
+      url: '/administration/change',
+      data: JSON.stringify(data),
+      contentType: "application/json",
+      success: function(response) {
+        employee_name = response.name
+        employee_lastname = response.lastname
+        $('#employee-name').val(employee_name)
+        $('#employee-lastname').val(employee_lastname)
+        $('#employee-ezso').val(response.ezso)
+        $('#employee-location').val(response.location)
+        $('#select2-employee-strm-container').val(response.strm)
+        $('#select2-employee-strm-container').text(response.strm)
+        var index = $('#employee-strm option[value="'+response.strm+'"]').index();
+        console.log(index)
+
+      },
+      error: function(xhr, status, error) {
+        // Handle errors here
+        console.log('Error: ' + error);
+      }
+    });
+  });
+
+  $("#formInputButton1").click(function(){
+    var data = {};
+    data.name = $('#employee-name').val()
+    data.lastname = $('#employee-lastname').val()
+    data.ezso = $('#employee-ezso').val()
+    data.location = $('#employee-location').val()
+    data.strm = $('#select2-employee-strm-container').text()
+    $.ajax({
+      type: 'POST',
+      url: '/administration/change/user',
+      data: JSON.stringify(data),
+      contentType: "application/json",
+      success: function(response) {
+        alert("Uspešno posodobljeno")
+      },
+      error: function(xhr, status, error) {
+        // Handle errors here
+        console.log('Error: ' + error);
+      }
+    });
+    });
+
+
+});
+</script>
+
+<div class="container" align="center" id="addSelectDivContainer">
+    <div id="removeSelectDiv">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>Izberite uporabnika, katerega želite posodobiti</h2>
+                <select class="selectpicker" id="employee-select">
+                    <option>Izberi ...</option>
+                {% for employee in employees %}
+                    <option>{{employee.name}}</option>
+                {% endfor %}
+                </select>
+                <hr class="w3-card-4">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="addUserDiv" align="center">
+    <div class="w3-card-4 addDiv updateDiv">
+        <div class="row">
+                <div class="col-sm-6 addLeftCol">
+                    <div class="addLeftColContent updateLeftColContent w3-card-4">
+                        <h2>Posodobite uporabnika</h2>
+                        <p class="text-white">Tukaj lahko posodobite uporabnika</p>
+                        <img src="{{ url_for('static', filename='icons/userWhite.svg') }}">
+                    </div>
+                </div>
+                <div class="col-sm-6" align="left">
+                    <div class="inputFormDiv">
+                        <label for="ime" class="text-large">Ime</label>
+                        <input type="text" id="employee-name" class="form-control input-lg formInput1" name="ime">
+                        <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                    </div>
+
+                    <div class="inputFormDiv">
+                        <label for="priimek" class="text-large">Priimek</label>
+                        <input type="text" id="employee-lastname" class="form-control input-lg formInput1" name="priimek"/>
+                        <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                    </div>
+
+                    <div class="inputFormDiv">
+                        <label for="ezso" class="text-large">EZŠO</label>
+                        <input type="text" id="employee-ezso" class="form-control input-lg formInput1" name="ezso"/>
+                        <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}" id="ezsoWarning">
+                    </div>
+
+                    <div class="inputFormDiv">
+                        <label for="location" class="text-large">Lokacija</label>
+                        <input type="text" id="employee-location" class="form-control input-lg formInput1" name="location"/>
+                        <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                    </div>
+
+                    <div class="inputFormDiv">
+                        <label for="enota" class="text-large">Enota</label>
+                        <br>
+                        <select class="selectpicker formInput1" id="employee-strm" data-live-search="true" name="enota">
+                            <option>Izberi ...</option>
+                            {% for u in units %}
+                                <option>{{u.number}}</option>
+                            {% endfor %}
+                        </select>
+                        <br>
+                        <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                    </div>
+
+                    <div class="row" align="center">
+                        <div class="col-sm-12">
+                            <button class="btn w3-card-4 doItButton" id="formInputButton1">Posodobi</button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

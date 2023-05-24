@@ -1,0 +1,76 @@
+<script>
+    $(document).ready(function(){
+        var containerWidth = $(".container").width();
+        $(".options-container").width(containerWidth);
+    });
+
+    $(window).resize(function(){
+        var containerWidth = $(".container").width();
+        $(".options-container").width(containerWidth);
+    });
+
+    $(".container").click(function(){
+        $(".options-container").toggleClass("active");
+    });
+</script>
+
+<style media="screen">
+    .selected::after {
+        background: url("{{ url_for('static', filename='icons/home.svg') }}");
+        content: "";
+        background-size: contain;
+        background-repeat: no-repeat;
+        position: absolute;
+        height: 100%;
+        width: 32px;
+        right: 10px;
+        top: 5px;
+        transition: all 0.4s;
+    }
+</style>
+
+<div class="container">
+    <div class="select-box">
+        <div class="options-container">
+            <div class="option">
+                <input type="radio" class="radio" id="optionRadio" name="category">
+                <label for="optionRadio">Janko</label>
+            </div>
+            <div class="option">
+                <input type="radio" class="radio" id="optionRadio" name="category">
+                <label for="optionRadio">Kevin</label>
+            </div>
+            <div class="option">
+                <input type="radio" class="radio" id="optionRadio" name="category">
+                <label for="optionRadio">Lenart</label>
+            </div>
+            <div class="option">
+                <input type="radio" class="radio" id="optionRadio" name="category">
+                <label for="optionRadio">Lenart</label>
+            </div>
+            <div class="option">
+                <input type="radio" class="radio" id="optionRadio" name="category">
+                <label for="optionRadio">Lenart</label>
+            </div>
+            <div class="option">
+                <input type="radio" class="radio" id="optionRadio" name="category">
+                <label for="optionRadio">Lenart</label>
+            </div>
+            <div class="option">
+                <input type="radio" class="radio" id="optionRadio" name="category">
+                <label for="optionRadio">Lenart</label>
+            </div>
+            <div class="option">
+                <input type="radio" class="radio" id="optionRadio" name="category">
+                <label for="optionRadio">Lenart</label>
+            </div>
+            <div class="option">
+                <input type="radio" class="radio" id="optionRadio" name="category">
+                <label for="optionRadio">Lenart</label>
+            </div>
+        </div>
+        <div class="selected">
+            Izberi...
+        </div>
+    </div>
+</div>

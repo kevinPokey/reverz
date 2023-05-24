@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+
+  <div class="container" id="loginCardContainer" align="center">
+      <div id="loginCard" class="w3-card-4 w3-animate-opacity">
+                <br>
+                  <form action="/login/" method="post" autocomplete="off">
+                      <img src="https://www.zav-sava.si/inc/img/logo-sl-si.png?_dc=2019" id="loginCardImage">
+
+                    <h2 class="text-sava">Prijava v sistem</h2>
+                    <hr>
+                    {% with messages = get_flashed_messages() %}
+                      {% if messages %}
+                        <p class="text-danger">{{messages[0]}}</p>
+                      {% endif %}
+                    {% endwith %}
+                    <div class="form-outline mb-4" align="left">
+                        <label class="form-label text-sava" for="formUsername">
+                            <img src="{{ url_for('static', filename='icons/user.svg') }}" draggable="false">
+                            Uporabnik
+                        </label>
+                      <input type="text" id="formUsername" class="form-control" name="formUsername" placeholder="Vpišite uporabniško ime"/>
+
+                    </div>
+
+                    <div class="form-outline mb-4" align="left">
+                        <label class="form-label text-sava" for="formPassword">
+                            <img src="{{ url_for('static', filename='icons/lock.svg') }}" draggable="false">
+                            Geslo
+                        </label>
+                      <input type="password" id="formPassword" class="form-control" name="formPassword" placeholder="Vpišite geslo"/>
+
+                    </div>
+
+                    <div class="pt-1 mb-4">
+                      <button class="btn w3-card-4" type="submit" id="loginButton">Prijava</button>
+                    </div>
+
+      </div>
+  </div>
+  <div id="loginBackgroundDiv"></div>
+  <div id="loginBackground"></div>
+{% endblock %}

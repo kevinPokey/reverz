@@ -1,0 +1,145 @@
+{% extends "nav.html" %}
+{% block body %}
+
+
+<script>
+$(document).ready(function() {
+
+    $("input").val("");
+    $('select').prop('selectedIndex',0);
+    $('.select2-selection__rendered').text('Izberi...')
+    $('.select2-selection__rendered').val('Izberi...')
+    $('input').prop('checked', false);
+
+  $('#employee-select').change(function() {
+    var selectedEmployee = $(this).val();
+
+    var data = {};
+    data.name = selectedEmployee;
+    data.selection = "employee";
+    $.ajax({
+      type: 'POST',
+      url: '/administration/delete',
+      data: JSON.stringify(data),
+      contentType: "application/json",
+      success: function(response) {
+        employee_name = response.name
+        employee_lastname = response.lastname
+        $('#employee-name').val(employee_name)
+        $('#employee-lastname').val(employee_lastname)
+        $('#employee-ezso').val(response.ezso)
+        $('#employee-location').val(response.location)
+        $('#employee-strm').val(response.strm)
+
+      },
+      error: function(xhr, status, error) {
+        // Handle errors here
+        console.log('Error: ' + error);
+      }
+    });
+  });
+
+  $("#formInputButton1").click(function(){
+    var data = {};
+    data.name = selectedEmployee;
+    data.selection = "employee";
+    $.ajax({
+      type: 'POST',
+      url: '/administration/delete/user',
+      data: JSON.stringify(data),
+      contentType: "application/json",
+      success: function(response) {
+
+      },
+      error: function(xhr, status, error) {
+        // Handle errors here
+        console.log('Error: ' + error);
+      }
+    });
+    });
+
+});
+</script>
+
+<div class="container" align="center" id="addSelectDivContainer">
+    <div id="removeSelectDiv">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>Izberite kaj želite izbrisat</h2>
+                <select class="selectpicker" id="addSelect">
+                    <option>uporabnika</option>
+                    <option>opremo</option>
+                    <option>Tip opreme</option>
+                    <option>Proizvajalca</option>
+                </select>
+                <hr class="w3-card-4">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="addUserDiv" align="center">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <select class="selectpicker" id="employee-select">
+                <option>Izberi ...</option>
+                {% for employee in employees %}
+                    <option>{{employee.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="w3-card-4 addDiv removeDiv">
+        <div class="row">
+                <div class="col-sm-6 addLeftCol">
+                    <div class="addLeftColContent removeLeftColContent w3-card-4">
+                        <h2>Izbrišite uporabnika</h2>
+                        <p class="text-white">Izbrisali boste tega uporabnika</p>
+                        <img src="{{ url_for('static', filename='icons/userWhite.svg') }}">
+                    </div>
+                </div>
+                <div class="col-sm-6" align="left">
+                    <div class="inputFormDiv">
+                        <label for="ime" class="text-large">Ime</label>
+                        <input type="text" id="employee-name" class="form-control input-lg formInput1" name="ime" disabled>
+                        <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                    </div>
+
+                    <div class="inputFormDiv">
+                        <label for="priimek" class="text-large">Priimek</label>
+                        <input type="text" id="employee-lastname" class="form-control input-lg formInput1" name="priimek" disabled/>
+                        <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                    </div>
+
+                    <div class="inputFormDiv">
+                        <label for="ezso" class="text-large">EZŠO</label>
+                        <input type="text" id="employee-ezso" class="form-control input-lg formInput1" name="ezso" disabled/>
+                        <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}" id="ezsoWarning">
+                    </div>
+
+                    <div class="inputFormDiv">
+                        <label for="location" class="text-large">Lokacija</label>
+                        <input type="text" id="employee-location" class="form-control input-lg formInput1" name="location" disabled/>
+                        <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                    </div>
+
+                    <div class="inputFormDiv">
+                        <label for="strm" class="text-large">STRM</label>
+                        <input type="text" id="employee-strm" class="form-control input-lg formInput1" name="strm" disabled/>
+                        <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                    </div>
+
+                    <div class="row" align="center">
+                        <div class="col-sm-12">
+                            <button class="btn w3-card-4 doItButton" id="formInputButton1">Izbriši</button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

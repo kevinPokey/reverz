@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Navbar -->
+<nav class="navbar navbar-expand-sm" id="mainNav">
+  <div class="container">
+    <a href="/">
+        {% if user.settings.theme == 0 %}
+        <img class="navbar-brand savaLogoWithText" src="{{ url_for('static', filename='pictures/savaLogoDark.png') }}">
+        {% else %}
+        <img class="navbar-brand savaLogoWithText" src="{{ url_for('static', filename='pictures/sava_logo_with_text.png') }}">
+        {% endif %}
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-mdb-toggle="collapse"
+      data-mdb-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item">
+            <a class="draw navbar-brand" href="/">
+                {% if user.settings.theme == 0 %}
+                <img src="{{ url_for('static', filename='icons/houseWhite.svg') }}" draggable="false">
+                {% else %}
+                <img src="{{ url_for('static', filename='icons/house.svg') }}" draggable="false">
+                {% endif %}
+                Domov
+            </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link mx-2 navbar-brand" href="/settings">
+              {% if user.settings.theme == 0 %}
+              <img src="{{ url_for('static', filename='icons/settingsWhite.svg') }}" draggable="false">
+              {% else %}
+              <img src="{{ url_for('static', filename='icons/settings.svg') }}" draggable="false">
+              {% endif %}
+              Nastavitve
+          </a>
+        </li>
+        <li class="nav-item ms-3">
+          <a class="btn navbar-brand" href="/logout">
+              {% if user.settings.theme == 0 %}
+              <img src="{{ url_for('static', filename='icons/log-outWhite.svg') }}" draggable="false">
+              {% else %}
+              <img src="{{ url_for('static', filename='icons/log-out.svg') }}" draggable="false">
+              {% endif %}
+              Odjava
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Navbar -->
+        {% block body %}
+          <!-- Tukaj bomo dodali izgled vsake strani -->
+        {% endblock %}
+
+{% endblock %}

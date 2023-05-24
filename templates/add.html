@@ -1,0 +1,391 @@
+{% extends "nav.html" %}
+{% block body %}
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var lastIndex = 0;
+        var value;
+
+        $("input").value = '';
+        $('select').prop('selectedIndex',0);
+        $('.select2-selection__rendered').text('Izberi...')
+        $('.select2-selection__rendered').val('Izberi...')
+        $('input').prop('checked', false);
+
+        $("#addSelectDiv").css("transition", "opacity 0.5s ease-out");
+        $("#addUserDiv").css("display", "block");
+        setTimeout(function(){
+            $("#addSelectDiv").css("opacity", "1");
+            $("#addUserDiv").css("opacity", "1");
+        }, 100)
+
+        $("#addSelect").change(function() {
+            $('#addSelect option:selected').each(function(){
+                  value = $(this).index();
+            });
+            var before = $("#addMainContainer").children()[lastIndex];
+            var after = $("#addMainContainer").children()[value];
+            $(before).css("opacity", "0");
+
+            setTimeout(function(){
+                $(before).css("display", "none");
+                $(after).css("display", "block");
+
+                setTimeout(function(){
+                    $(after).css("opacity", "1");
+                }, 100);
+
+            }, 500);
+
+            lastIndex = value;
+        });
+
+        $("#formInputButton1").click(function(){
+            var ok = true;
+            var ezsoOk = true;
+
+            if($("#ezso").val().length != 7 || !$.isNumeric($("#ezso").val())){
+                ok = false;
+                ezsoOk = false;
+
+                $("#ezsoWarning").css("display", "block");
+            }
+            else {
+                $("#ezsoWarning").css("display", "none");
+            }
+
+            $(".formInput1").each(function(index, el) {
+                if($(this).val() == "" || $(this).val() == "Izberi ..."){
+                    ok = false;
+                    $(this).siblings('img').css("display", "block");
+                }
+                else {
+                    $(this).siblings('img').css("display", "none");
+
+                    if(!ezsoOk){
+                        console.log($("#ezso").val().length);
+                        $("#ezsoWarning").css("display", "block");
+                    }
+                    else {
+                        $("#ezsoWarning").css("display", "none");
+                    }
+                }
+            });
+            if(!ok){
+                button = $(this);
+                button.css("animation", "shake 0.82s cubic-bezier(.36,.07,.19,.97) both");
+                setTimeout(function(){
+                    button.css("animation", "");
+                }, 820);
+            }
+            else {
+                $.post( "/addUser/", { ime: $("#ime").val(), priimek: $("#priimek").val(), ezso: $("#ezso").val(), location: $("#location").val(), enota: $("#enota").val() }).done(function(data){
+                    location.reload()
+                });
+
+            }
+            $("input").value = '';
+        $('select').prop('selectedIndex',0);
+        $('.select2-selection__rendered').text('Izberi...')
+        $('.select2-selection__rendered').val('Izberi...')
+        $('input').prop('checked', false);
+        });
+
+        $("#formInputButton2").click(function(){
+            var ok = true;
+
+            $(".formInput2").each(function(index, el) {
+                if($(this).val() == "" || $(this).val() == "Izberi ..."){
+                    ok = false;
+                    $(this).siblings('img').css("display", "block");
+                }
+                else {
+                    $(this).siblings('img').css("display", "none");
+                }
+            });
+            if(!ok){
+                button = $(this);
+                button.css("animation", "shake 0.82s cubic-bezier(.36,.07,.19,.97) both");
+                setTimeout(function(){
+                    button.css("animation", "");
+                }, 820);
+            }
+            else {
+                $.post( "/addEquipment/", { tip: $("#tip").val(), znamka: $("#znamka").val(), model: $("#model").val() }).done(function(data){
+                    location.reload()
+                });
+
+            }
+            $("input").value = '';
+        $('select').prop('selectedIndex',0);
+        $('.select2-selection__rendered').text('Izberi...')
+        $('.select2-selection__rendered').val('Izberi...')
+        $('input').prop('checked', false);
+        });
+
+        $("#formInputButton3").click(function(){
+            var ok = true;
+
+            $(".formInput3").each(function(index, el) {
+                if($(this).val() == "" || $(this).val() == "Izberi ..."){
+                    ok = false;
+                    $(this).siblings('img').css("display", "block");
+                }
+                else {
+                    $(this).siblings('img').css("display", "none");
+                }
+            });
+            if(!ok){
+                button = $(this);
+                button.css("animation", "shake 0.82s cubic-bezier(.36,.07,.19,.97) both");
+                setTimeout(function(){
+                    button.css("animation", "");
+                }, 820);
+            }
+            else {
+                $.post( "/addEquipment/type/", { type: $("#type").val()} ).done(function(data){
+                    location.reload()
+                });
+
+            }
+            $("input").value = '';
+        $('select').prop('selectedIndex',0);
+        $('.select2-selection__rendered').text('Izberi...')
+        $('.select2-selection__rendered').val('Izberi...')
+        $('input').prop('checked', false);
+        });
+
+        $("#formInputButton4").click(function(){
+            var ok = true;
+
+            $(".formInput4").each(function(index, el) {
+                if($(this).val() == "" || $(this).val() == "Izberi ..."){
+                    ok = false;
+                    $(this).siblings('img').css("display", "block");
+                }
+                else {
+                    $(this).siblings('img').css("display", "none");
+                }
+            });
+            if(!ok){
+                button = $(this);
+                button.css("animation", "shake 0.82s cubic-bezier(.36,.07,.19,.97) both");
+                setTimeout(function(){
+                    button.css("animation", "");
+                }, 820);
+            }
+            else {
+                $.post( "/addEquipment/producer/", { producer: $("#producer").val()} ).done(function(data){
+                    location.reload()
+                });
+
+            }
+            $("input").value = '';
+        $('select').prop('selectedIndex',0);
+        $('.select2-selection__rendered').text('Izberi...')
+        $('.select2-selection__rendered').val('Izberi...')
+        $('input').prop('checked', false);
+        });
+
+    });
+
+</script>
+
+    <div class="container" align="center" id="addSelectDivContainer">
+        <div id="addSelectDiv">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2>Izberite kaj želite dodati</h2>
+                    <select class="selectpicker" id="addSelect">
+                        <option>Uporabnik</option>
+                        <option>Oprema</option>
+                        <option>Tip opreme</option>
+                        <option>Proizvajalec</option>
+                    </select>
+                    <hr class="w3-card-4">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="addMainContainer">
+        <!-- addUser -->
+        <div class="container addDivContainer" id="addUserDiv" align="center">
+            <div class="w3-card-4 addDiv">
+                <div class="row">
+                        <div class="col-sm-6 addLeftCol">
+                            <div class="addLeftColContent w3-card-4">
+                                <h2>Dodajte uporabnika</h2>
+                                <p class="text-white">Tukaj lahko dodate uporabnika</p>
+                                <img src="{{ url_for('static', filename='icons/userWhite.svg') }}">
+                            </div>
+                        </div>
+                        <div class="col-sm-6" align="left">
+                            <div class="inputFormDiv">
+                                <label for="ime" class="text-large">Ime</label>
+                                <input type="text" id="ime" class="form-control input-lg formInput1" name="ime">
+                                <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                            </div>
+
+                            <div class="inputFormDiv">
+                                <label for="priimek" class="text-large">Priimek</label>
+                                <input type="text" id="priimek" class="form-control input-lg formInput1" name="priimek"/>
+                                <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                            </div>
+
+                            <div class="inputFormDiv">
+                                <label for="ezso" class="text-large">EZŠO</label>
+                                <input type="text" id="ezso" class="form-control input-lg formInput1" name="ezso"/>
+                                <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}" id="ezsoWarning">
+                            </div>
+
+                            <div class="inputFormDiv">
+                                <label for="location" class="text-large">Lokacija</label>
+                                <input type="text" id="location" class="form-control input-lg formInput1" name="location"/>
+                                <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                            </div>
+
+                            <div class="inputFormDiv">
+                                <label for="enota" class="text-large">Enota</label>
+                                <br>
+                                <select class="selectpicker formInput1" id="enota" data-live-search="true" name="enota">
+                                    <option>Izberi ...</option>
+                                    {% for u in units %}
+                                        <option>{{u.number}}</option>
+                                    {% endfor %}
+                                </select>
+                                <br>
+                                <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                            </div>
+
+                            <div class="row" align="center">
+                                <div class="col-sm-12">
+                                    <button class="btn w3-card-4 doItButton" id="formInputButton1">Dodaj</button>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <!-- addUser -->
+
+        <!-- addEquipment -->
+        <div class="container addDivContainer" id="addEquipmentDiv" align="center">
+            <div class="w3-card-4 addDiv">
+                <div class="row">
+
+                        <div class="col-sm-6" align="left">
+                            <div class="inputFormDiv">
+                                <label for="tip" class="text-large">Tip opreme</label>
+                                <br>
+                                <select class="form-outline selectpicker input-lg formInput2" id="tip" data-live-search="true" name="tip">
+                                    <option>Izberi ...</option>
+                                    {% for t in equipmentTypes %}
+                                        <option>{{t.name}}</option>
+                                    {% endfor %}
+                                </select>
+                                <br>
+                                <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                            </div>
+
+                            <div class="inputFormDiv">
+                                <label for="znamka" class="text-large">Proizvajalec</label>
+                                <br>
+                                <select class="form-outline selectpicker input-lg formInput2" id="znamka" data-live-search="true" name="znamka">
+                                    <option>Izberi ...</option>
+                                    {% for p in producers %}
+                                        <option>{{p.name}}</option>
+                                    {% endfor %}
+                                </select>
+                                <br>
+                                <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                            </div>
+
+                            <div class="inputFormDiv">
+                                <label for="model" class="text-large">Model</label>
+                                <input type="text" id="model" class="form-control input-lg formInput2" name="model"/>
+                                <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                            </div>
+
+                            <br>
+
+                            <div class="row" align="center">
+                                <div class="col-sm-12">
+                                    <button type="submit" class="btn w3-card-4 doItButton" id="formInputButton2">Dodaj</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 addRightCol">
+                            <div class="addRightColContent w3-card-4">
+                                <h2>Dodajte opremo</h2>
+                                <p class="text-white">Tukaj lahko dodate opremo</p>
+                                <img src="{{ url_for('static', filename='icons/hard-drive.svg') }}">
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+        <!-- addEquipment -->
+
+        <!-- addEquipmentType -->
+        <div class="container addDivContainer" id="addEquipmentTypeDiv" align="center">
+            <div class="w3-card-4 addDivSmall">
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <div id="addDiv">
+                    <div class="row" align="left">
+                        <div class="col-sm-12">
+                            <div class="addDivSmallContent w3-card-4" align="center">
+                                <h3>Dodajte opremo</h3>
+                                <img src="{{ url_for('static', filename='icons/monitor.svg') }}">
+                            </div>
+
+                            <div class="inputFormDiv">
+                                <label for="type" class="text-large" id="lastLable">Tip</label>
+                                <input type="text" id="type" class="form-control input-lg formInput3" name="type" placeholder="npr.  ( Monitor, Telefon, Slušalke, itd... )"/>
+                                <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                            </div>
+
+                            <button type="submit" class="btn w3-card-4 doItButton" id="formInputButton3">Dodaj</button>
+                        </div>
+                    </div>
+                  </div>
+            </div>
+        </div>
+        <!-- addEquipmentType -->
+
+        <!-- addProducer -->
+        <div class="container addDivContainer" id="addEquipmentProducerDiv" align="center">
+            <div class="w3-card-4 addDivSmall">
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <div id="addDiv">
+                    <div class="row" align="left">
+                        <div class="col-sm-12">
+                            <div class="addDivSmallContent w3-card-4" align="center">
+                                <h3>Dodajte Proizvajalca</h3>
+                                <img src="{{ url_for('static', filename='icons/aperture.svg') }}">
+                            </div>
+
+                            <div class="inputFormDiv">
+                                <label for="type" class="text-large">Proizvajalec</label>
+                                <input type="text" id="producer" class="form-control input-lg formInput4" name="producer"/>
+                                <img src="{{ url_for('static', filename='icons/alert-triangle.svg') }}">
+                            </div>
+                            <button type="submit" class="btn w3-card-4 doItButton" id="formInputButton4">Dodaj</button>
+                        </div>
+                    </div>
+                  </div>
+            </div>
+        </div>
+        <!-- addProducer -->
+
+    </div>
+
+{% endblock %}
